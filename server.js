@@ -24,25 +24,15 @@ server.connection({
 	port: process.env.PORT
 });
 
-// Add the route
-server.route({
-	method: 'GET',
-	path:'/books',
-	handler: function (request, reply) {
-
-		return reply('Here the books will be shown soon...');
-	}
-});
-
 // load Good plugin
 server.register(Plugins, (err) => {
-	console.log('SI');
+	console.log('Plugins');
 	if (err) {
 		console.error('Failed to load plugin:', err);
 	}
 });
 
-// load Good plugin
+// load Routes
 server.register(Routes, (err) => {
 	console.log('Routes');
 	if (err) {
