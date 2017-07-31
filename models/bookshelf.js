@@ -9,6 +9,13 @@ const Knex = KnexFactory(KnexConfig.development);
 // pass connection to bookshelf (used for object/relational mapping)
 const Bookshelf = BookshelfFactory(Knex);
 
+// any options that may be passed to Model#fetchAll (such as withRelated)
+// may also be passed in the options to fetchPage, as you can see in the example below.
+// By default, with no parameters or missing parameters,
+// fetchPage will use an options object of {page: 1, pageSize: 10}
+// https://github.com/bookshelf/bookshelf/wiki/Plugin:-Pagination
+Bookshelf.plugin('pagination');
+
 // prevent cyclical dependencies when creating models
 // https://github.com/tgriesser/bookshelf/wiki/Plugin:-Model-Registry
 Bookshelf.plugin('registry');
@@ -21,13 +28,6 @@ Bookshelf.plugin('virtuals');
 // the specified fields are hidden/shown as appropriate when calling toJSON.
 // https://github.com/bookshelf/bookshelf/wiki/Plugin:-Visibility
 Bookshelf.plugin('visibility');
-
-// any options that may be passed to Model#fetchAll (such as withRelated)
-// may also be passed in the options to fetchPage, as you can see in the example below.
-// By default, with no parameters or missing parameters,
-// fetchPage will use an options object of {page: 1, pageSize: 10}
-// https://github.com/bookshelf/bookshelf/wiki/Plugin:-Pagination
-Bookshelf.plugin('pagination');
 
 const ModelBase = ModelBaseFactory(Bookshelf);
 

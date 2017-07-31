@@ -24,7 +24,7 @@ server.connection({
 	port: process.env.PORT
 });
 
-// load Good plugin
+// load Plugins
 server.register(Plugins, (err) => {
 	console.log('Plugins');
 	if (err) {

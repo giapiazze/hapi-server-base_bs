@@ -1,11 +1,18 @@
 const Joi = require('joi');
 
-const UserValidation = {
-	email: Joi.string().email().required(),
-	password: Joi.string().regex(/[a-zA-Z0-9@-_]{3,30}/).required(),
-	firstName: Joi.string().min(3).max(64).required(),
-	lastName: Joi.string().min(3).max(64).required(),
-	isActive: Joi.boolean()
-};
+const UserValidations =
+	{
+		query: {
+			id: Joi.number().integer().min(1).description('the user ID PK increment'),
+			email: Joi.string().email().description('the user email'),
+			firstName: Joi.string().min(3).max(64),
+			lastName: Joi.string().min(3).max(64),
+			isActive: Joi.boolean(),
+			page: Joi.number().integer().min(1),
+			pageSize: Joi.number().integer().min(10)
+		},
+		params: {},
+		payload: {}
+	};
 
-module.export = UserValidation;
+module.export = UserValidations;

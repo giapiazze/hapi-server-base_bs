@@ -4,6 +4,7 @@
   "description": "Hapi Server Base",
   "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -19,8 +20,12 @@
     "hapi": "^16.5.0",
     "hapi-auth-basic": "^4.2.0",
     "hapi-auth-jwt2": "^7.3.0",
+    "hapi-swagger": "^7.7.0",
+    "inert": "^4.2.1",
     "joi": "^10.6.0",
     "knex": "^0.13.0",
-    "mysql": "^2.14.0"
+    "lodash": "^4.17.4",
+    "mysql": "^2.14.0",
+    "vision": "^4.1.1"
   }
 }

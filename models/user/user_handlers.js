@@ -6,21 +6,29 @@ const UserHandlers =
 	      userFindAll: function (request, reply) {
 
           const ip = request.info.remoteAddress;
-          const params = request.params;
-          const options = {};
+          const options = {
+          	page: parseInt(request.query.page) || 1,
+	          pageSize: parseInt(request.query.pageSize) || 10
+          };
+          delete request.query.page;
+		      delete request.query.pageSize;
+          const query = request.query;
 
-          console.log('Parametri: '+params);
+		      let str = JSON.stringify(query);
+		      console.log('Query: ' + str);
+		      console.log('Options: ' + JSON.stringify(options));
 
-          User.findAll(params, options)
+          User.where(query)
+	          .fetchPage(options)
             .then(function (collection) {
               if (!collection) {
                 return reply(Boom.badRequest('Nessun Utente!'));
               }
-              let response = JSON.stringify(collection);
-              return reply(response);
+	            let response = JSON.stringify(collection);
+	            console.log(response);
+              return reply(collection);
             })
             .catch(function (error) {
-              console.log(error);
               return reply(Boom.gatewayTimeout('An error occurred.'));
             });
         }

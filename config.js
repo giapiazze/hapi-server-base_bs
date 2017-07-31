@@ -3,7 +3,18 @@ const AuthJWT = require ('hapi-auth-jwt2');
 
 const Good = require('good');
 // const Auth = require ('../plugins/auth');
-// const Users = require('../plugins/api/users');
+
+const HapiSwagger = require('hapi-swagger');
+const Inert = require('inert');
+const Vision = require('vision');
+
+const options = {
+	info: {
+		'title': 'Test API Documentation',
+		'version': '1.0.0',
+	}
+};
+
 
 const Plugins = [
 	// logging
@@ -21,17 +32,23 @@ const Plugins = [
 					module: 'good-console'
 				}, 'stdout']
 			}
-		}},
+		}
+	},
 
 	// third party auth schemas
 	{ register: AuthBasic },
 	{ register: AuthJWT },
 
+	// Swagger
+	Inert,
+	Vision,
+	{
+		register: HapiSwagger,
+		options: options
+	},
+
 	// // local auth plugin
 	// { register: Auth },
-	//
-	// // api plugins
-	// { register: Users }
 ];
 
 module.exports = Plugins;

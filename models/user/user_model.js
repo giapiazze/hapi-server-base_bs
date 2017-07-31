@@ -7,9 +7,9 @@ const User = ModelBase.extend({
 	hidden: ['password'],
 
 	// validation is passed to Joi.object(), so use a raw object
-	validate: {
-		firstName: Joi.string()
-	}
+	// validate: {
+	// 	firstName: Joi.string()
+	// }
 });
 
 module.exports = User;
