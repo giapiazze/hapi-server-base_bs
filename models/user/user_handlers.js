@@ -10,16 +10,13 @@ const UserHandlers =
           	page: parseInt(request.query.page) || 1,
 	          pageSize: parseInt(request.query.pageSize) || 10
           };
-          delete request.query.page;
-		      delete request.query.pageSize;
           const query = request.query;
 
 		      let str = JSON.stringify(query);
 		      console.log('Query: ' + str);
 		      console.log('Options: ' + JSON.stringify(options));
 
-          User.where(query)
-	          .fetchPage(options)
+          User.fetchJsonApi(request.query)
             .then(function (collection) {
               if (!collection) {
                 return reply(Boom.badRequest('Nessun Utente!'));

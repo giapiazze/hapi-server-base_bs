@@ -1,7 +1,7 @@
 const Hapi = require('hapi');
 const Dotenv = require('dotenv');
 
-const Plugins = require('./config');
+const Plugins = require('./plugins');
 const Routes = require('./routes');
 
 Dotenv.config({ silent: true });
@@ -28,7 +28,7 @@ server.connection({
 server.register(Plugins, (err) => {
 	console.log('Plugins');
 	if (err) {
-		console.error('Failed to load plugin:', err);
+		server.log('error', 'Failed to load plugin:' + err);
 	}
 });
 
@@ -36,7 +36,7 @@ server.register(Plugins, (err) => {
 server.register(Routes, (err) => {
 	console.log('Routes');
 	if (err) {
-		console.error('Failed to register routes:', err);
+		server.log('error', 'Failed to register routes: ' + err);
 	}
 });
 
@@ -47,7 +47,7 @@ server.start((err) => {
 		throw err;
 	}
 	console.log(server.registrations);
-	console.log('Server running at:', server.info.uri);
+	server.log('info', 'Server running at: ' + server.info.uri);
 });
 
 

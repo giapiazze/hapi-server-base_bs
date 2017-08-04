@@ -25,8 +25,10 @@ module.exports.register = (server, options, next) => {
 						firstName: Joi.string().min(3).max(64),
 						lastName: Joi.string().min(3).max(64),
 						isActive: Joi.boolean(),
-						page: Joi.number().integer().min(1),
-						pageSize: Joi.number().integer().min(10)
+						columns: Joi.array().items(Joi.string()),
+						page: Joi.number().integer().min(1).default(1),
+						pageSize: Joi.number().integer().min(10).default(10),
+						count: Joi.boolean(),
 					}
 				}
 			},

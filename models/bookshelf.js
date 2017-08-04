@@ -2,6 +2,7 @@ const BookshelfFactory = require('bookshelf');
 const KnexFactory = require('knex');
 const KnexConfig = require('../knexfile');
 const ModelBaseFactory = require('bookshelf-modelbase');
+const JsonApiParams = require('bookshelf-jsonapi-params');
 
 // create connection to the database
 const Knex = KnexFactory(KnexConfig.development);
@@ -28,6 +29,8 @@ Bookshelf.plugin('virtuals');
 // the specified fields are hidden/shown as appropriate when calling toJSON.
 // https://github.com/bookshelf/bookshelf/wiki/Plugin:-Visibility
 Bookshelf.plugin('visibility');
+
+Bookshelf.plugin(JsonApiParams);
 
 const ModelBase = ModelBaseFactory(Bookshelf);
 

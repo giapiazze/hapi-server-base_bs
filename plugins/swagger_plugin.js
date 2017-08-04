@@ -9,12 +9,26 @@ const options = {
 	}
 };
 
-const SwaggerPack = [
-	Inert,
-	Vision,
-	{
-		register: HapiSwagger,
-		options: options
-	}];
+const plugin = {
+	register: (server, options, next) => {
 
-module.export = SwaggerPack;
+		server.register([
+				Inert,
+				Vision,
+				{
+					register: HapiSwagger,
+					options: options
+				}],
+
+			next()
+		)},
+	options: options
+};
+
+plugin.attributes = {
+	name: 'hapi-swagger',
+	version: '7.7.0',
+};
+
+
+module.export = plugin;

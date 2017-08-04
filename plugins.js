@@ -8,10 +8,26 @@ const HapiSwagger = require('hapi-swagger');
 const Inert = require('inert');
 const Vision = require('vision');
 
-const options = {
+
+let swaggerOptions = {
 	info: {
 		'title': 'Test API Documentation',
 		'version': '1.0.0',
+	}
+};
+
+let goodOptions = {
+	reporters: {
+		console: [{
+			module: 'good-squeeze',
+			name: 'Squeeze',
+			args: [{
+				response: '*',
+				log: '*'
+			}]
+		}, {
+			module: 'good-console'
+		}, 'stdout']
 	}
 };
 
@@ -19,20 +35,7 @@ const options = {
 const Plugins = [
 	// logging
 	{ register: Good,
-		options: {
-			reporters: {
-				console: [{
-					module: 'good-squeeze',
-					name: 'Squeeze',
-					args: [{
-						response: '*',
-						log: '*'
-					}]
-				}, {
-					module: 'good-console'
-				}, 'stdout']
-			}
-		}
+		options: goodOptions
 	},
 
 	// third party auth schemas
@@ -44,7 +47,7 @@ const Plugins = [
 	Vision,
 	{
 		register: HapiSwagger,
-		options: options
+		options: swaggerOptions
 	},
 
 	// // local auth plugin
