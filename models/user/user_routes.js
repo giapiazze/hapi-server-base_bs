@@ -9,6 +9,8 @@ console.log('Validations: ' + UserValidations);
 
 module.exports.register = (server, options, next) => {
 
+	let validation = new UserValidations();
+
 	server.route([
 		{
 			method: 'GET',
@@ -21,7 +23,7 @@ module.exports.register = (server, options, next) => {
 				notes: ['Return the Users list filtered by query (params) paginated. Default pageSize: 10'],
 				validate: {
 					query: {
-						id: Joi.number().integer().min(1).description('the user ID PK increment'),
+						id: validation.checkId(),
 						email: Joi.string().email().description('the user email'),
 						firstname: Joi.string().min(3).max(64),
 						lastname: Joi.string().min(3).max(64),
