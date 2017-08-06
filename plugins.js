@@ -2,6 +2,7 @@ const AuthBasic = require('hapi-auth-basic');
 const AuthJWT = require ('hapi-auth-jwt2');
 
 const Good = require('good');
+const GoodPack = require('./plugins/good_plugin');
 // const Auth = require ('../plugins/auth');
 
 const HapiSwagger = require('hapi-swagger');
@@ -34,8 +35,8 @@ let goodOptions = {
 
 const Plugins = [
 	// logging
-	{ register: Good,
-		options: goodOptions
+	{ register: GoodPack.register,
+		options: GoodPack.options
 	},
 
 	// third party auth schemas
