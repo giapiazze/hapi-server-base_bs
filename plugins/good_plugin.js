@@ -20,4 +20,4 @@ const GoodPack = {
 	options: Options
 };
 
-module.export = GoodPack;
+module.exports = GoodPack;
