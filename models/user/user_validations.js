@@ -23,7 +23,7 @@ const Joi = require('joi');
 	}
 };*/
 
-const UserSchema = ({
+const UserSchema = Joi.object().keys({
     id: Joi.number().integer().min(1).description('the user ID PK increment'),
     email: Joi.string().email().description('the user email'),
     firstname: Joi.string().min(3).max(64),
@@ -34,14 +34,4 @@ const UserSchema = ({
     count: Joi.boolean().description('the number of records found')
 });
 
-
-class UserValidations  {
-
-	checkId(param){
-        return UserSchema.id;
-    }
-
-}
-
-
-module.exports = UserValidations;
+module.exports = UserSchema;

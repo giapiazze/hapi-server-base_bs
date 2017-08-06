@@ -9,8 +9,6 @@ console.log('Validations: ' + UserValidations);
 
 module.exports.register = (server, options, next) => {
 
-	let validation = new UserValidations();
-
 	server.route([
 		{
 			method: 'GET',
@@ -22,16 +20,17 @@ module.exports.register = (server, options, next) => {
 				auth: false,
 				notes: ['Return the Users list filtered by query (params) paginated. Default pageSize: 10'],
 				validate: {
-					query: {
-						id: validation.checkId(),
-						email: Joi.string().email().description('the user email'),
-						firstname: Joi.string().min(3).max(64),
-						lastname: Joi.string().min(3).max(64),
-						is_active: Joi.boolean(),
-						page: Joi.number().integer().min(1),
-						pageSize: Joi.number().integer().min(10),
-						count: Joi.boolean().description('the number of records found'),
-					}
+					query: UserValidations
+
+                    /*id: validation.checkId(),
+                    email: Joi.string().email().description('the user email'),
+                    firstname: Joi.string().min(3).max(64),
+                    lastname: Joi.string().min(3).max(64),
+                    is_active: Joi.boolean(),
+                    page: Joi.number().integer().min(1),
+                    pageSize: Joi.number().integer().min(10),
+                    count: Joi.boolean().description('the number of records found'),*/
+
 				}
 			},
 		}
