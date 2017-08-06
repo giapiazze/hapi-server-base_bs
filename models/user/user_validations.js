@@ -23,4 +23,5 @@ const UserValidations = {
 	}
 };
 
+
 module.export = UserValidations;
