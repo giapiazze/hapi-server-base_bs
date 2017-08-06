@@ -27,7 +27,8 @@ module.exports.register = (server, options, next) => {
 						lastname: Joi.string().min(3).max(64),
 						is_active: Joi.boolean(),
 						page: Joi.number().integer().min(1),
-						pageSize: Joi.number().integer().min(10)
+						pageSize: Joi.number().integer().min(10),
+						count: Joi.boolean().description('the number of records found'),
 					}
 				}
 			},
