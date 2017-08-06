@@ -17,7 +17,7 @@ const Options = {
 
 const GoodPack = {
 	register: Good,
-	Options
+	options: Options
 };
 
 module.export = GoodPack;
