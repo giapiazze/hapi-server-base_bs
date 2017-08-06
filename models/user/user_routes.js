@@ -23,8 +23,8 @@ module.exports.register = (server, options, next) => {
 					query: {
 						id: Joi.number().integer().min(1).description('the user ID PK increment'),
 						email: Joi.string().email().description('the user email'),
-						firstName: Joi.string().min(3).max(64),
-						lastName: Joi.string().min(3).max(64),
+						firstname: Joi.string().min(3).max(64),
+						lastname: Joi.string().min(3).max(64),
 						is_active: Joi.boolean(),
 						page: Joi.number().integer().min(1),
 						pageSize: Joi.number().integer().min(10)
