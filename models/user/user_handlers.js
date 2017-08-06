@@ -18,6 +18,7 @@ const UserHandlers =
 				page: parseInt(query.pagination.page) || 1,
 				pageSize: parseInt(query.pagination.pageSize) || 10,
 				withRelated: query.pagination.withRelated || [],
+				columns: query.pagination.columns || [],
 			};
 
 			if (query.extra.count) {
@@ -63,10 +64,15 @@ const UserHandlers =
 							qb.where(e, signal, query.filters[e]);
 						})
 					})
+					.query(function (qb) {
+						query.sort.forEach(function (el) {
+							qb.orderBy(el.column, el.direction);
+						})
+					})
 					.fetchPage(paginationOptions)
 					.then(function (collection) {
 						if (!collection) {
-							return reply(Boom.badRequest('Nessun Utente!'));
+							return reply(Boom.badRequest('No users'));
 						}
 
 						console.log(collection.pagination);
@@ -74,7 +80,11 @@ const UserHandlers =
 							meta: {
 								totalCount: totalCount,
 								filteredCount: filteredCount,
-							}
+								page: collection.pagination.page,
+								pageCount: collection.pagination.pageCount,
+								pageSize: collection.pagination.pageSize,
+								rowCount: collection.pagination.rowCount,
+							},
 						};
 						let collMap = mapper.map(collection, 'user', mapperOptions);
 						return reply(collMap);

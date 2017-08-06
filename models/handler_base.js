@@ -8,7 +8,7 @@ const HandlerBase = {
 			filters: {},
 			pagination: {},
 			extra: {},
-			columns: [],
+			sort: [],
 		};
 
 		switch (model) {
@@ -31,6 +31,18 @@ const HandlerBase = {
 
 			if (referenceModel.extra.hasOwnProperty(e)) {
 				response.extra[e] = queryUrl[e];
+			}
+
+			if (referenceModel.sort.hasOwnProperty(e)) {
+				queryUrl[e].forEach( (el) => {
+					if (el[0] === '-') {
+						response.sort.push({column: el.substr(1, el.length), direction: 'DESC'})
+					} else if (el[0] === '+') {
+						response.sort.push({column: el.substr(1, el.length), direction: 'ASC'})
+					} else {
+						response.sort.push({column: el, direction: 'ASC'})
+					}
+				});
 			}
 
 		});
