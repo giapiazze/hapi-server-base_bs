@@ -21,13 +21,13 @@ exports.seed = function(knex, Promise) {
 		knex('users').insert(Users),
 		knex('realms').insert(Realms),
 		knex('realms_users').insert([
-			{user_id: 1, realm_id: 1},
-			{user_id: 1, realm_id: 2},
-			{user_id: 1, realm_id: 3},
-			{user_id: 2, realm_id: 1},
-			{user_id: 2, realm_id: 2},
-			{user_id: 3, realm_id: 1},
-			{user_id: 3, realm_id: 3},
+			{userId: 1, realmId: 1},
+			{userId: 1, realmId: 2},
+			{userId: 1, realmId: 3},
+			{userId: 2, realmId: 1},
+			{userId: 2, realmId: 2},
+			{userId: 3, realmId: 1},
+			{userId: 3, realmId: 3},
 		])
 	);
 };

@@ -1,21 +1,22 @@
-const User = require('../../models/user/user_model');
 
 exports.up = function(knex, Promise) {
-	return knex.schema.createTable('realms', function(table) {
-		table.increments('id').primary();
-		table.string('name', 64).notNullable();
-		table.timestamps();
-	}).createTable('realms_users', function(table) {
-		table.integer('user_id')
-			.unsigned()
-			.notNullable()
-			.references('id')
-			.inTable('users');
-		table.integer('realm_id')
+	return knex.schema.createTable('realms', function(tbl) {
+		tbl.increments('id').primary();
+		tbl.string('name', 64).notNullable();
+
+		// Timestamp
+		tbl.timestamps();
+	}).createTable('realms_users', function(tbl) {
+		tbl.integer('realmId')
 			.unsigned()
 			.notNullable()
 			.references('id')
 			.inTable('realms');
+		tbl.integer('userId')
+			.unsigned()
+			.notNullable()
+			.references('id')
+			.inTable('users');
 	});
 };
 

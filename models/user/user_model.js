@@ -16,29 +16,30 @@ const User = Bookshelf.Model.extend({
 
 	// relationships
 	realms: function() {
-		return this.belongsToMany(Realm);
+		return this.belongsToMany(Realm, 'realms_users', 'realmId', 'userId');
 	},
 
 	// model methods
-	generatePasswordHash: function (password) {
-
-		return Bcrypt.genSalt(10)
-			.then(function (salt) {
-				return Bcrypt.hash(password, salt);
-			})
-			.then(function (hash) {
-				return { password, hash };
-			});
-
-	}},
+	// generatePasswordHash: function (password) {
+	//
+	// 	return Bcrypt.genSalt(10)
+	// 		.then(function (salt) {
+	// 			return Bcrypt.hash(password, salt);
+	// 		})
+	// 		.then(function (hash) {
+	// 			return { password, hash };
+	// 		});
+	//
+	// }
+	},
 	{
 		schema: [
 			Fields.StringField('username', {maxLength: 64}),
 			Fields.EmailField('email'),
 			Fields.EncryptedStringField('password', {algorithm: 'Hash', minLength: 8, saltLength: 10}),
-			Fields.BooleanField('is_active'),
-			Relations.BelongsToMany('Realm'),
-			Scope('isActive', function(){ return this.where({active: true}); })
+			Fields.BooleanField('isActive'),
+			//Scope
+			Scope('isActive?', function(){ return this.where({active: true}); })
 		]
 	});
 
