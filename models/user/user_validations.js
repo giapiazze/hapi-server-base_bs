@@ -24,4 +24,4 @@ const UserValidations = {
 };
 
 
-module.export = UserValidations;
+module.exports = UserValidations;

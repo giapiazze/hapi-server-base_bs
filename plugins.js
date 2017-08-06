@@ -35,9 +35,7 @@ let goodOptions = {
 
 const Plugins = [
 	// logging
-	{ register: GoodPack.register,
-		options: GoodPack.options
-	},
+	GoodPack,
 
 	// third party auth schemas
 	{ register: AuthBasic },
