@@ -1,5 +1,6 @@
 const UserHandlers = require('./user_handlers');
 const UserValidations = require('./user_validations');
+const Handlers = require('../../handlers/user/user_handlers');
 
 console.log('Handler: ' + UserHandlers);
 console.log('Validations: ' + UserValidations);
@@ -10,7 +11,7 @@ module.exports.register = (server, options, next) => {
 		{
 			method: 'GET',
 			path: '/users',
-			handler: UserHandlers.userFindAll,
+			handler: Handlers.userFindAll,
 			config: {
 				tags: ['api', 'users'],
 				description: 'Users List',
