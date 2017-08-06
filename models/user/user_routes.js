@@ -20,7 +20,7 @@ module.exports.register = (server, options, next) => {
 				auth: false,
 				notes: ['Return the Users list filtered by query (params) paginated. Default pageSize: 10'],
 				validate: {
-					query: UserValidations
+					query: UserValidations.query
 
                     /*id: validation.checkId(),
                     email: Joi.string().email().description('the user email'),
