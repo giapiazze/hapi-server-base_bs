@@ -48,7 +48,7 @@ const UserValidations = {
 	pagination: pagination,
 	extra: extra,
   sort: sort,
-	query: Joi.object().keys(Object.assign({},filters, pagination, extra, sort)),
+	query: Joi.object().keys(Object.assign({}, filters, pagination, extra, sort)),
 
 };
 
