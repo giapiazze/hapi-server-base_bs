@@ -5,7 +5,7 @@ exports.up = function(knex, Promise) {
 	  tbl.string('username', 64).notNullable();
 	  tbl.string('password', 64).notNullable();
   	tbl.string('email').notNullable();
-	  tbl.boolean('isActive').notNullable().defaultTo(false);
+	  tbl.boolean('is_active').notNullable().defaultTo(false);
 
 	  tbl.timestamps();
 	})

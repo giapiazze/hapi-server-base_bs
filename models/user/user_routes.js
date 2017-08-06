@@ -5,6 +5,7 @@ const Boom = require('boom');
 const Joi = require('joi');
 
 console.log('Handler: ' + UserHandlers);
+console.log('Validations: ' + UserValidations);
 
 module.exports.register = (server, options, next) => {
 
@@ -19,17 +20,16 @@ module.exports.register = (server, options, next) => {
 				auth: false,
 				notes: ['Return the Users list filtered by query (params) paginated. Default pageSize: 10'],
 				validate: {
-					query: {
-						id: Joi.number().integer().min(1).description('the user ID PK increment'),
-						email: Joi.string().email().description('the user email'),
-						firstName: Joi.string().min(3).max(64),
-						lastName: Joi.string().min(3).max(64),
-						isActive: Joi.boolean(),
-						columns: Joi.array().items(Joi.string()),
-						page: Joi.number().integer().min(1).default(1),
-						pageSize: Joi.number().integer().min(10).default(10),
-						count: Joi.boolean(),
-					}
+					query: UserValidations.query,
+					// query: {
+					// 	id: Joi.number().integer().min(1).description('the user ID PK increment'),
+					// 	username: Joi.string().min(3).max(64),
+					// 	is_active: Joi.boolean(),
+					// 	columns: Joi.array().items(Joi.string()),
+					// 	page: Joi.number().integer().min(1).default(1),
+					// 	pageSize: Joi.number().integer().min(10).default(10),
+					// 	count: Joi.boolean(),
+					// }
 				}
 			},
 		}

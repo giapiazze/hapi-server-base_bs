@@ -1,8 +1,7 @@
 const BookshelfFactory = require('bookshelf');
 const KnexFactory = require('knex');
 const KnexConfig = require('../knexfile');
-const ModelBaseFactory = require('bookshelf-modelbase');
-const JsonApiParams = require('bookshelf-jsonapi-params');
+const BookshelfSchema = require('bookshelf-schema');
 
 // create connection to the database
 const Knex = KnexFactory(KnexConfig.development);
@@ -30,8 +29,8 @@ Bookshelf.plugin('virtuals');
 // https://github.com/bookshelf/bookshelf/wiki/Plugin:-Visibility
 Bookshelf.plugin('visibility');
 
-Bookshelf.plugin(JsonApiParams);
 
-const ModelBase = ModelBaseFactory(Bookshelf);
+Bookshelf.plugin(BookshelfSchema);
 
-module.exports = ModelBase;
+
+module.exports = Bookshelf;
