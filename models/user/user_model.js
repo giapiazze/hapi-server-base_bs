@@ -1,11 +1,9 @@
 const Bookshelf = require('../bookshelf');
-const Joi = require('joi');
-const Bcrypt = require('bcrypt');
+
 // related models
 const Realm = require('../../models/realm/realm_model');
 // for schema fields, relations and scopes
 const Fields = require('bookshelf-schema/lib/fields');
-const Relations = require('bookshelf-schema/lib/relations');
 const Scope = require('bookshelf-schema/lib/scopes');
 
 const User = Bookshelf.Model.extend({

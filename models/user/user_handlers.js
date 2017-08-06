@@ -2,7 +2,6 @@ const User = require('./user_model');
 const Boom = require('boom');
 
 const HandlerBase = require('../handler_base');
-const Bookshelf = require('../bookshelf');
 const Mapper = require('jsonapi-mapper');
 
 const UserHandlers =
@@ -43,7 +42,8 @@ const UserHandlers =
 						return reply({count: count});
 					})
 					.catch(function (error) {
-						return reply(Boom.gatewayTimeout('An error occurred.'));
+						let errorMsg = error.message || 'An error occurred';
+						return reply(Boom.gatewayTimeout(errorMsg));
 					});
 			} else {
 				// Calculating records total number
@@ -82,10 +82,9 @@ const UserHandlers =
 					.catch(function (error) {
 						let errorMsg = error.message || 'An error occurred';
 						return reply(Boom.gatewayTimeout(errorMsg));
-
 					})
 
-			};
+			}
 		}
 	};
 

@@ -31,6 +31,5 @@ const UserValidations = {
 
 };
 
-let a = filters.hasOwnProperty('page');
 
 module.exports = UserValidations;

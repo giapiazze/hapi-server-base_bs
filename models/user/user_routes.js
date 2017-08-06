@@ -1,8 +1,5 @@
 const UserHandlers = require('./user_handlers');
 const UserValidations = require('./user_validations');
-const User = require('./user_model');
-const Boom = require('boom');
-const Joi = require('joi');
 
 console.log('Handler: ' + UserHandlers);
 console.log('Validations: ' + UserValidations);
