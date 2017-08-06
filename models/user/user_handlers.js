@@ -35,9 +35,9 @@ const UserHandlers =
 							qb.where(e, signal, query.filters[e]);
 						})
 					})
-					.count('id')
+					.count()
 					.then(function (count) {
-						if (!count) {
+						if (count.isNaN) {
 							return reply(Boom.badRequest('Impossible to count'));
 						}
 						return reply({count: count});
