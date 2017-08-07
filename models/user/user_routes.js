@@ -16,10 +16,10 @@ module.exports.register = (server, options, next) => {
 				tags: ['api', 'users'],
 				description: 'Users List',
 				auth: false,
-				notes: ['Return the Users list filtered by query (params) paginated. Default pageSize: 10'],
+				notes: ['Return the Users list filtered by query (url), paginated and sorted. Default pageSize: 10'],
 				validate: {
 					query: UserValidations.query
-				}
+				},
 			},
 		}
 	]);
