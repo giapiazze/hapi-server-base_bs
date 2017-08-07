@@ -17,6 +17,46 @@ const User = Bookshelf.Model.extend({
 		return this.belongsToMany(Realm, 'realms_users', 'realmId', 'userId');
 	},
 
+	// model functions
+	filtered_count: function(filters) {
+		return this
+			.query(function (qb) {
+				Object.keys(filters).map((e) => {
+					let signal = '=';
+					if (typeof filters[e] === 'object') {
+						signal = 'in';
+						qb.whereIn(e, filters[e]);
+					} else if (typeof filters[e] === 'string') {
+						signal = 'LIKE';
+					}
+					qb.where(e, signal, filters[e]);
+				});
+			})
+			.count();
+	},
+
+	filtered_order_page: function(filters, sort, paginationOptions) {
+		return this
+			.query(function (qb) {
+				Object.keys(filters).map((e) => {
+					let signal = '=';
+					if (typeof filters[e] === 'object') {
+						signal = 'in';
+						qb.whereIn(e, filters[e]);
+					} else if (typeof filters[e] === 'string') {
+						signal = 'LIKE';
+					}
+					qb.where(e, signal, filters[e]);
+				});
+			})
+			.query(function (qb) {
+				sort.forEach(function (el) {
+					qb.orderBy(el.column, el.direction);
+				})
+			})
+			.fetchPage(paginationOptions);
+	},
+
 	// model methods
 	// generatePasswordHash: function (password) {
 	//

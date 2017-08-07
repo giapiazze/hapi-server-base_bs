@@ -1,10 +1,14 @@
 const Hapi = require('hapi');
-const Dotenv = require('dotenv');
 
 const Plugins = require('./plugins');
 const Routes = require('./routes');
 
-Dotenv.config({ silent: true });
+const Config = require('./config');
+
+const HOST = Config.get('/host');
+const PORT = Config.get('/port');
+
+
 
 // Create a server with a host and port
 const server = new Hapi.Server({
@@ -20,8 +24,8 @@ const server = new Hapi.Server({
 });
 
 server.connection({
-	host: process.env.HOST,
-	port: process.env.PORT
+	host: HOST,
+	port: PORT
 });
 
 // load Plugins
