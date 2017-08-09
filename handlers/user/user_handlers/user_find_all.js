@@ -24,6 +24,7 @@ const UserFindAll =
 			// Calculating records total number
 			let totalCount = 'Da fare!';
 			let filteredCount = 'Da fare!';
+			let tries = User.forge();
 
 			if (query.extra.count) {
 				User

@@ -20,12 +20,13 @@ const pagination = {
     .default(10),
   withRelated: Joi.alternatives().try(
 		Joi.array().description('relationships: realms, [realms, roles]')
-      .items(Joi.string().valid('realms')),
-    Joi.string().description('relationships: realms, [realms, roles]').valid('realms')),
+      .items(Joi.string().valid('realms','roles')),
+    Joi.string().description('relationships: realms, [realms, roles]').valid('realms','roles')),
 	columns: Joi.alternatives().try(
 		Joi.array().description('columns for select: id, [id, username]')
-			.items(Joi.string().valid('id', 'username', 'email', 'isActive')),
-		Joi.string().description('columns for select: id, [id, username]').valid('id', 'username', 'email', 'isActive')),
+			.items(Joi.string().valid('id', 'username', 'email', 'isActive', 'scope')),
+		Joi.string().description('columns for select: id, [id, username]')
+			.valid('id', 'username', 'email', 'isActive', 'scope')),
 };
 
 const extra = {

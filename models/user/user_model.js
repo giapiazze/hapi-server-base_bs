@@ -2,6 +2,7 @@ const Bookshelf = require('../bookshelf');
 
 // related models
 const Realm = require('../../models/realm/realm_model');
+const Role = require('../../models/role/role_model');
 // for schema fields, relations and scopes
 const Fields = require('bookshelf-schema/lib/fields');
 const Scope = require('bookshelf-schema/lib/scopes');
@@ -12,9 +13,25 @@ const User = Bookshelf.Model.extend({
 
 	hidden: ['password'],
 
+	virtuals: {
+		realmsList: function() {
+			let realmsList = [];
+			let realms = this.related('realms');
+			realmsList = realmsList.concat(realms.map(function (realm) {
+				return realm.get('name');
+			}).join());
+
+
+			return realmsList;
+		}
+	},
+
 	// relationships
 	realms: function() {
 		return this.belongsToMany(Realm, 'realms_users', 'realmId', 'userId');
+	},
+	roles: function() {
+		return this.belongsToMany(Role, 'roles_users', 'roleId', 'userId');
 	},
 
 	// model functions
