@@ -1,4 +1,5 @@
 const UserValidation = require('../models/user/user_validations');
+const RoleValidation = require('../models/role/role_validations');
 
 
 const HandlerBase = {
@@ -14,6 +15,9 @@ const HandlerBase = {
 		switch (model) {
 			case 'user':
 				referenceModel = UserValidation;
+				break;
+			case 'role':
+				referenceModel = RoleValidation;
 				break;
 		}
 

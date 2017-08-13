@@ -2,9 +2,6 @@ const HeaderValidation = require('../../models/headerValidation');
 const UserValidations = require('../../models/user/user_validations');
 const UserHandlers = require('./user_handlers');
 
-const Config = require('../../config');
-const authStrategy = Config.get('/serverHapiConfig/authStrategy');
-
 
 module.exports.register = (server, options, next) => {
 

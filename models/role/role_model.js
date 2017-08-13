@@ -16,6 +16,38 @@ let Role = Bookshelf.Model.extend({
 			return this.belongsToMany(Bookshelf._models.User);
 		},
 
+		// scopes
+		scopes: {
+			filtered: function (qb, filters) {
+				Object.keys(filters).map((e) => {
+					let signal = '=';
+					if (typeof filters[e] === 'object') {
+						signal = 'in';
+						qb.whereIn(e, filters[e]);
+					} else if (typeof filters[e] === 'string') {
+						signal = 'LIKE';
+					}
+					qb.where(e, signal, filters[e]);
+				});
+			},
+			filtered_ordered: function (qb, filters, sort) {
+				Object.keys(filters).map((e) => {
+					let signal = '=';
+					if (typeof filters[e] === 'object') {
+						signal = 'in';
+						qb.whereIn(e, filters[e]);
+					} else if (typeof filters[e] === 'string') {
+						signal = 'LIKE';
+					}
+					qb.where(e, signal, filters[e]);
+				});
+				sort.forEach(function (el) {
+					qb.orderBy(el.column, el.direction);
+				})
+
+			}
+		},
+
 	},
 	// {
 	// 	scopes: {
