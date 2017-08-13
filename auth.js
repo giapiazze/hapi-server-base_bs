@@ -1,4 +1,5 @@
 const AuthJWT2 = require('hapi-auth-jwt2');
+const Boom = require('boom');
 
 const Config = require('./config');
 
@@ -13,9 +14,10 @@ module.exports.register = (server, options, next) => {
 			null,
 			Boolean(user),
 			{ user, scope: decodedToken.scope, roles: decodedToken.roles, realm: decodedToken.realm }
-			);
+		);
 
 	};
+
 
 	server.register(AuthJWT2, (err) => {
 		if (err) {
