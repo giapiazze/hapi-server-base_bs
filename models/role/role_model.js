@@ -2,6 +2,7 @@ const Bookshelf = require('../bookshelf');
 
 // related models
 require('../../models/realm/realm_model');
+require('../../models/user/user_model');
 
 let Role = Bookshelf.Model.extend({
 		tableName: 'roles',
@@ -16,13 +17,13 @@ let Role = Bookshelf.Model.extend({
 		},
 
 	},
-	{
-		scopes: {
-			inRealm: function (qb, realmId) {
-				qb.where({realmId: realmId});
-			},
-		},
-	},
+	// {
+	// 	scopes: {
+	// 		inRealm: function (qb, realmId) {
+	// 			qb.where({realmId: realmId});
+	// 		},
+	// 	},
+	// },
 );
 
 module.exports = Bookshelf.model('Role', Role);
