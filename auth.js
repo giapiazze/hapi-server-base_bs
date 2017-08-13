@@ -1,5 +1,4 @@
 const AuthJWT2 = require('hapi-auth-jwt2');
-const Boom = require('boom');
 
 const Config = require('./config');
 
