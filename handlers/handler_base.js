@@ -34,7 +34,13 @@ const HandlerBase = {
 			}
 
 			if (referenceModel.sort.hasOwnProperty(e)) {
-				queryUrl[e].forEach( (el) => {
+				let sort = [];
+				if (typeof queryUrl[e] === 'string') {
+					sort = queryUrl[e].split(',');
+				} else {
+					sort = queryUrl[e];
+				}
+				sort.forEach( (el) => {
 					if (el[0] === '-') {
 						response.sort.push({column: el.substr(1, el.length), direction: 'DESC'})
 					} else if (el[0] === '+') {

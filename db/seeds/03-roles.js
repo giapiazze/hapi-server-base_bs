@@ -1,13 +1,12 @@
-const Users = require('./data/01-user_data');
+const Roles = require('./data/03-role_data');
 
 
 exports.seed = function(knex, Promise) {
 	return Promise.join(
 		// Deletes ALL existing entries
-		knex('users').del(),
+		knex('roles').del(),
 
 		// Inserts seed entries
-		knex('users').insert(Users),
+		knex('roles').insert(Roles),
 	);
 };
-

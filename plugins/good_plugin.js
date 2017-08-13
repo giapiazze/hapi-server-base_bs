@@ -2,17 +2,27 @@ const Good = require('good');
 
 const Options = {
 	reporters: {
-		console: [{
-			module: 'good-squeeze',
-			name: 'Squeeze',
-			args: [{
-				response: '*',
-				log: '*'
+		myConsoleReporter: [
+			{
+				module: 'good-squeeze',
+				name: 'Squeeze',
+				args: [{log: '*', request: '*', response: '*'}]
+			}, {
+				module: 'good-console'
+			}, 'stdout'],
+		myFileReporter: [
+			{
+				module: 'good-squeeze',
+				name: 'Squeeze',
+				args: [{log: 'user', request: '*', response: '*'}]
+			}, {
+				module: 'good-squeeze',
+				name: 'SafeJson'
+			}, {
+				module: 'good-file',
+				args: ['./log/good_log.log']
 			}]
-		}, {
-			module: 'good-console'
-		}, 'stdout']
-	}
+	},
 };
 
 const GoodPack = {

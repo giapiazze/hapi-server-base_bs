@@ -16,12 +16,12 @@ const filters = {
 const pagination = {
 	page: Joi.number().integer().min(1).description('page number')
     .default(1),
-	pageSize: Joi.number().integer().min(10).description('rows per page')
+	pageSize: Joi.number().integer().min(5).max(100).description('rows per page')
     .default(10),
   withRelated: Joi.alternatives().try(
-		Joi.array().description('relationships: realms, [realms, roles]')
-      .items(Joi.string().valid('realms','roles')),
-    Joi.string().description('relationships: realms, [realms, roles]').valid('realms','roles')),
+		Joi.array().description('relationships: roles, [roles, roles.realm]')
+      .items(Joi.string().valid('roles.realm','roles')),
+    Joi.string().description('relationships: roles, [roles, roles.realm]').valid('roles.realm','roles')),
 	columns: Joi.alternatives().try(
 		Joi.array().description('columns for select: id, [id, username]')
 			.items(Joi.string().valid('id', 'username', 'email', 'isActive', 'scope')),

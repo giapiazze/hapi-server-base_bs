@@ -10,7 +10,6 @@ const UserFindAll =
 			let mapper = new Mapper.Bookshelf(request.server.info.uri);
 
 			let uri = request.server.info.uri;
-			console.log('URI: ' + uri);
 
 			let query = HandlerBase.queryParse(request.query, 'user');
 
@@ -24,7 +23,7 @@ const UserFindAll =
 			// Calculating records total number
 			let totalCount = 'Da fare!';
 			let filteredCount = 'Da fare!';
-			let tries = User.forge();
+			let tries = User;
 
 			if (query.extra.count) {
 				User
@@ -35,8 +34,8 @@ const UserFindAll =
 						}
 						totalCount = totCount;
 						User
-							.forge()
-							.filtered_count(query.filters)
+							.filtered(query.filters)
+							.count()
 							.then(function (fltCount) {
 								if (fltCount.isNaN) {
 									return reply(Boom.badRequest('Impossible to count'));
@@ -61,7 +60,8 @@ const UserFindAll =
 						totalCount = totCount;
 						User
 							.forge()
-							.filtered_count(query.filters)
+							.filtered(query.filters)
+							.count()
 							.then(function (fltCount) {
 								if (fltCount.isNaN) {
 									return reply(Boom.badRequest('Impossible to count'));
@@ -69,13 +69,13 @@ const UserFindAll =
 								filteredCount = fltCount;
 								User
 									.forge()
-									.filtered_order_page(query.filters, query.sort, paginationOptions)
+									.filtered_ordered(query.filters, query.sort)
+									.fetchPage(paginationOptions)
 									.then(function (collection) {
 										if (!collection) {
 											return reply(Boom.badRequest('No users'));
 										}
 
-										console.log(collection.pagination);
 										const mapperOptions = {
 											meta: {
 												totalCount: totalCount,

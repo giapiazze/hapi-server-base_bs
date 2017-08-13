@@ -1,13 +1,17 @@
 const BookshelfFactory = require('bookshelf');
 const KnexFactory = require('knex');
 const KnexConfig = require('../knexfile');
-const BookshelfSchema = require('bookshelf-schema');
+const BookshelfScopes = require('bookshelf-scopes');
+const BookshelfModelBase = require('bookshelf-modelbase');
+const BookshelfCamelCase = require('bookshelf-camelcase');
 
 // create connection to the database
 const Knex = KnexFactory(KnexConfig.development);
 
 // pass connection to bookshelf (used for object/relational mapping)
 const Bookshelf = BookshelfFactory(Knex);
+
+Bookshelf.plugin(BookshelfModelBase.pluggable);
 
 // any options that may be passed to Model#fetchAll (such as withRelated)
 // may also be passed in the options to fetchPage, as you can see in the example below.
@@ -30,7 +34,10 @@ Bookshelf.plugin('virtuals');
 Bookshelf.plugin('visibility');
 
 
-Bookshelf.plugin(BookshelfSchema);
+Bookshelf.plugin(BookshelfScopes);
+
+Bookshelf.plugin(BookshelfCamelCase);
+
 
 
 module.exports = Bookshelf;

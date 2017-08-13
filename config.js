@@ -14,9 +14,8 @@ const constants = {
     SUPER_ADMIN: 'SuperAdmin',
   },
   AUTH_STRATEGIES: {
-    TOKEN: 'standard-jwt',
-    SESSION: 'jwt-with-session',
-    REFRESH: 'jwt-with-session-and-refresh-token'
+    PURE_TOKEN: 'standard-jwt-with-refresh',
+    SESSION_TOKEN: 'jwt-with-session-for-refresh-token'
   },
 	HOST: '127.0.0.1',
   PORT: 4000,
@@ -39,9 +38,9 @@ const config = {
   },
   constants: constants,
   expirationPeriod: {
-    short: '10m',
-    medium: '30m',
-    long: '4h'
+    short: '7d',
+    medium: '30d',
+    long: '90d'
   },
   authAttempts: {
     forIp: 50,
@@ -51,7 +50,7 @@ const config = {
   jwtSecret: {
     $filter: 'env',
     production: process.env.JWT_SECRET,
-    $default: 'aStrongJwtSecret-#mgtfYK@QuRV8VMM7T>WfN4;^fMVr)y'
+    $default: '#mgtfYK@QuRV8-guardatecosavihoinventatoperfareunbelStrongJwtSecret-VMM7T>W;^fMVr)y'
   },
   nodemailer: {
     $filter: 'env',
@@ -101,6 +100,7 @@ const config = {
     production: 'http://localhost:' + constants.PORT,
     $default: 'http://localhost:' + constants.PORT
   },
+
   serverHapiConfig: {
     appTitle: constants.APP_TITLE,
     cors: {
@@ -113,8 +113,8 @@ const config = {
     apiPath: __dirname + '/server/models',
     authStrategy: {
       $filter: 'env',
-      local: constants.AUTH_STRATEGIES.REFRESH,
-      $default: constants.AUTH_STRATEGIES.REFRESH
+      local: constants.AUTH_STRATEGIES.PURE_TOKEN,
+      $default: constants.AUTH_STRATEGIES.PURE_TOKEN
     },
     enableQueryValidation: {
       $filter: 'env',

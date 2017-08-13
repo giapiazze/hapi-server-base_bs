@@ -1,24 +1,28 @@
 const Bookshelf = require('../bookshelf');
 
 // related models
-const User = require('../../models/user/user_model');
-// for schema fields, relations and scopes
-const Fields = require('bookshelf-schema/lib/fields');
+require('../../models/realm/realm_model');
 
-const Role = Bookshelf.Model.extend({
+let Role = Bookshelf.Model.extend({
 		tableName: 'roles',
 		hasTimestamps: true,
 
 		// relationships
-		users: function() {
-			return this.belongsToMany(User, 'roles_users', 'roleId', 'userId');
+		realm: function () {
+			return this.belongsTo(Bookshelf._models.Realm);
 		},
+		users: function () {
+			return this.belongsToMany(Bookshelf._models.User);
+		},
+
 	},
 	{
-		schema: [
-			Fields.StringField('name', {maxLength: 64, required: true}),
-
-		]
-	});
+		scopes: {
+			inRealm: function (qb, realmId) {
+				qb.where({realmId: realmId});
+			},
+		},
+	},
+);
 
 module.exports = Bookshelf.model('Role', Role);

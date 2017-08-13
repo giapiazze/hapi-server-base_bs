@@ -1,13 +1,11 @@
-const Users = require('./data/01-user_data');
-
+const Realms = require('./data/02-realm_data');
 
 exports.seed = function(knex, Promise) {
 	return Promise.join(
 		// Deletes ALL existing entries
-		knex('users').del(),
+		knex('realms').del(),
 
 		// Inserts seed entries
-		knex('users').insert(Users),
+		knex('realms').insert(Realms),
 	);
 };
-

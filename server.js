@@ -2,6 +2,7 @@ const Hapi = require('hapi');
 
 const Plugins = require('./plugins');
 const Routes = require('./routes');
+const Auth = require('./auth');
 
 const Config = require('./config');
 
@@ -28,31 +29,42 @@ server.connection({
 	port: PORT
 });
 
-// load Plugins
-server.register(Plugins, (err) => {
-	console.log('Plugins');
-	if (err) {
-		server.log('error', 'Failed to load plugin:' + err);
-	}
-});
+// Auth module
+server.register(Auth, (err) => {
+		if (err) {
+			server.log('error', 'Failed to register auth: ' + err);
+		}
 
-// load Routes
-server.register(Routes, (err) => {
-	console.log('Routes');
-	if (err) {
-		server.log('error', 'Failed to register routes: ' + err);
-	}
-});
+		// Plugins
+		server.register(Plugins, (err) => {
+			if (err) {
+				server.log('error', 'Failed to load plugin:' + err);
+			}
 
-// Start the server
-server.start((err) => {
+			// Routes
+			server.register(Routes, (err) => {
+				if (err) {
+					server.log('error', 'Failed to register routes: ' + err);
+				}
 
-	if (err) {
-		throw err;
-	}
-	console.log(server.registrations);
-	server.log('info', 'Server running at: ' + server.info.uri);
-});
+				// Start the server
+				server.start((err) => {
+
+					if (err) {
+						throw err;
+					}
+
+					server.log('info', 'Auth loaded');
+					server.log('info', 'Plugins loaded');
+					server.log('info', 'Routes loaded');
+					server.log('info', 'Server running at: ' + server.info.uri);
+				})
+			})
+		})
+	},
+);
+
+
 
 
 //
