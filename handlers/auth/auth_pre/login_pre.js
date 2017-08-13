@@ -207,7 +207,7 @@ const LoginPre = [
 
 			// Add Roles to Scope
 			roles.each(function (role){
-				if (role.attributes.name === 'User') {
+				if (role.attributes.name.indexOf('User') !== -1) {
 					scope = scope.concat(role.attributes.name+'-'+request.pre.user.attributes.id)
 				} else {
 					scope = scope.concat(role.attributes.name);
