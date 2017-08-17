@@ -1,15 +1,17 @@
 const Bookshelf = require('../bookshelf');
 
 // related models
-require('../../models/role/role_model');
+require('../../models/user/user_model');
 
 const Realm = Bookshelf.Model.extend({
 		tableName: 'realms',
+
+		softDelete: true,
 		hasTimestamps: true,
 
 		// relationships
-		roles: function () {
-			return this.hasMany(Bookshelf._models.Role);
+		users: function () {
+			return this.belongsToMany(Bookshelf._models.User, 'realms_roles_users');
 		},
 	},
 	// {

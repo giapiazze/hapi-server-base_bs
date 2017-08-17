@@ -11,15 +11,16 @@ module.exports.register = (server, options, next) => {
 			path: '/users',
 			config: {
 				handler: UserHandlers.userFindAll,
-				auth: {
-					scope: ['WA_SuperAdmin','WA_Admin']
-				},
+				auth: false,
+				// {
+				// 	scope: ['WA_SuperAdmin','WA_Admin']
+				// },
 				tags: ['api', 'Users'],
 				description: 'Users List',
 				notes: ['Returns Users list filtered by query (url), paginated and sorted. Default pageSize: 10'],
 				validate: {
 					query: UserValidations.query,
-					headers: HeaderValidation.header,
+					// headers: HeaderValidation.header,
 				},
 			},
 		}

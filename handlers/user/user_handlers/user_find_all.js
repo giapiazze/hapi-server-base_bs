@@ -1,5 +1,7 @@
 const User = require('../../../models/user/user_model');
 const Boom = require('boom');
+const URL = require('url');
+
 
 const HandlerBase = require('../../handler_base');
 const Mapper = require('jsonapi-mapper');
@@ -9,9 +11,9 @@ const UserFindAll =
 		userFindAll: function (request, reply) {
 			let mapper = new Mapper.Bookshelf(request.server.info.uri);
 
-			let uri = request.server.info.uri;
-
 			let query = HandlerBase.queryParse(request.query, 'user');
+
+			let test = query.filters;
 
 			let paginationOptions = {
 				page: parseInt(query.pagination.page) || 1,
@@ -21,9 +23,8 @@ const UserFindAll =
 			};
 
 			// Calculating records total number
-			let totalCount = 'Da fare!';
-			let filteredCount = 'Da fare!';
-			let tries = User;
+			let totalCount = 0;
+			let filteredCount = 0;
 
 			if (query.extra.count) {
 				User
@@ -69,6 +70,7 @@ const UserFindAll =
 								filteredCount = fltCount;
 								User
 									.forge()
+									.realmRoles(2)
 									.filtered_ordered(query.filters, query.sort)
 									.fetchPage(paginationOptions)
 									.then(function (collection) {

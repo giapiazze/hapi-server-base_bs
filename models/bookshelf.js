@@ -1,6 +1,7 @@
 const BookshelfFactory = require('bookshelf');
 const KnexFactory = require('knex');
 const KnexConfig = require('../knexfile');
+const SoftDelete = require('bookshelf-paranoia');
 const BookshelfScopes = require('bookshelf-scopes');
 const BookshelfModelBase = require('bookshelf-modelbase');
 const BookshelfCamelCase = require('bookshelf-camelcase');
@@ -33,6 +34,7 @@ Bookshelf.plugin('virtuals');
 // https://github.com/bookshelf/bookshelf/wiki/Plugin:-Visibility
 Bookshelf.plugin('visibility');
 
+Bookshelf.plugin(SoftDelete);
 
 Bookshelf.plugin(BookshelfScopes);
 

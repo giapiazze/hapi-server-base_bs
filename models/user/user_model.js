@@ -1,4 +1,5 @@
 const Bookshelf = require('../bookshelf');
+const Joi = require('joi');
 
 // related models
 require('../../models/realm/realm_model');
@@ -7,16 +8,26 @@ require('../../models/role/role_model');
 
 const User = Bookshelf.Model.extend({
 		tableName: 'users',
+
+		softDelete: true,
 		hasTimestamps: true,
 
 		hidden: ['password'],
 
+		// validations
+		validate: {
+			id: Joi.number().integer().min(1),
+			username: Joi.string().min(3).max(64),
+			email: Joi.string().email(),
+			is_active: Joi.boolean().valid(true, false),
+		},
+
 		// relationships
 		roles: function () {
-			return this.belongsToMany(Bookshelf._models.Role);
+			return this.belongsToMany(Bookshelf._models.Role, 'realms_roles_users');
 		},
 		realms: function () {
-			return this.hasMany(Bookshelf._models.Realm).through(Bookshelf._models.Role);
+			return this.belongsToMany(Bookshelf._models.Realm, 'realms_roles_users')
 		},
 
 		// roles: function () {
@@ -28,6 +39,12 @@ const User = Bookshelf.Model.extend({
 
 		// scopes
 		scopes: {
+			realmRoles: function (qb, realmId) {
+				// qb.join('roles_users', 'roles_users.user_id', '=', 'users.id');
+				// qb.join('roles', 'roles.id', '=', 'roles_users.role_id');
+				// qb.where('roles.realm_id', '=', realmId).debug(true);
+
+			},
 			onlyActive: function (qb) {
 				qb.where({isActive: true});
 			},
@@ -36,7 +53,6 @@ const User = Bookshelf.Model.extend({
 					let signal = '=';
 					if (typeof filters[e] === 'object') {
 						signal = 'in';
-						qb.whereIn(e, filters[e]);
 					} else if (typeof filters[e] === 'string') {
 						signal = 'LIKE';
 					}
@@ -46,9 +62,11 @@ const User = Bookshelf.Model.extend({
 			filtered_ordered: function (qb, filters, sort) {
 				Object.keys(filters).map((e) => {
 					let signal = '=';
+					let pippo = filters[e].length;
 					if (typeof filters[e] === 'object') {
-						signal = 'in';
-						qb.whereIn(e, filters[e]);
+						if (filters[e].length) {
+							signal = 'in';
+						}
 					} else if (typeof filters[e] === 'string') {
 						signal = 'LIKE';
 					}
@@ -56,8 +74,8 @@ const User = Bookshelf.Model.extend({
 				});
 				sort.forEach(function (el) {
 					qb.orderBy(el.column, el.direction);
-				})
-
+				});
+				qb.debug(true);
 			}
 		},
 	},

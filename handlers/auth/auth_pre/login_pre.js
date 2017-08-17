@@ -42,7 +42,7 @@ const LoginPre = [
 			let user = {};
 
 			if (username) {
-				User.findOne({ username: username })
+				User.findOne({ username: username }, {require: false})
 					.then(function (result) {
 						if (!result) {
 							return reply(Boom.unauthorized('Invalid username or password'));
@@ -61,7 +61,7 @@ const LoginPre = [
 						return reply(Boom.gatewayTimeout(errorMsg));
 					});
 			} else if (email) {
-				User.findOne({email: email})
+				User.findOne({email: email}, {require: false})
 					.fetch()
 					.then(function (result) {
 						if (!result) {
@@ -92,7 +92,7 @@ const LoginPre = [
 			let user = request.pre.user.attributes;
 
 			Realm
-				.findOne({name: realmName})
+				.findOne({name: realmName}, {require: false})
 				.then(function(result){
 					let realm = result;
 					if (!realm) {

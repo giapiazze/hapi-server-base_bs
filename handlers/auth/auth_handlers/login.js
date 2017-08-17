@@ -39,7 +39,7 @@ const Login =
 					{withRelated: ['roles', {
 						'roles': function (qb) {
 							qb.where('roles.realm_id', '=', realm.id);
-						}}]
+						}}, 'roles.realm']
 					})
 				.then(function (result) {
 					user = result;

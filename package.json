@@ -15,6 +15,7 @@
     "bookshelf-camelcase": "^2.0.1",
     "bookshelf-jsonapi-params": "^1.0.0-beta.2",
     "bookshelf-modelbase": "^2.10.4",
+    "bookshelf-paranoia": "^0.11.0",
     "bookshelf-schema": "^0.3.4",
     "bookshelf-scopes": "^1.5.0",
     "boom": "^5.2.0",

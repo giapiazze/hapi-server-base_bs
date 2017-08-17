@@ -13,6 +13,7 @@ const RoleFindAll =
 
 			let query = HandlerBase.queryParse(request.query, 'role');
 
+
 			let paginationOptions = {
 				page: parseInt(query.pagination.page) || 1,
 				pageSize: parseInt(query.pagination.pageSize) || 10,

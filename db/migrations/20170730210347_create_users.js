@@ -7,8 +7,13 @@ exports.up = function(knex, Promise) {
   	tbl.string('email').notNullable();
 	  tbl.boolean('is_active').notNullable().defaultTo(false);
 
+	  // DB Validation
+	  tbl.unique(['username', 'password', 'email']);
+
+	  // Timestamp
 	  tbl.timestamp('created_at').defaultTo(knex.fn.now());
 	  tbl.timestamp('updated_at').defaultTo(knex.fn.now());
+	  tbl.timestamp('deleted_at').nullable();
   })
 };
 

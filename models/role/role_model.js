@@ -6,14 +6,13 @@ require('../../models/user/user_model');
 
 let Role = Bookshelf.Model.extend({
 		tableName: 'roles',
+
+		softDelete: true,
 		hasTimestamps: true,
 
 		// relationships
-		realm: function () {
-			return this.belongsTo(Bookshelf._models.Realm);
-		},
 		users: function () {
-			return this.belongsToMany(Bookshelf._models.User);
+			return this.belongsToMany(Bookshelf._models.User, 'realms_roles_users');
 		},
 
 		// scopes
