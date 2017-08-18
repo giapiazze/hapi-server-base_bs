@@ -12,22 +12,32 @@ Object.keys(u.prototype.validate).map((at) => {
 	attributes = attributes.concat(at);
 });
 
-const condition = ['{cd}'];
+const operators = ['{=}', '{<}', '{<=}', '{>}', '{>=}', '{<>}'];
 
-const operators = ['{=}', '{<}', '{<=}', '{>}', '{>=}', '{<>}',
-									 '=', '<', '<=', '>', '>=', '<>'];
-const inOperator = ['{in}', 'in'];
+let idRegExp = '';
+operators.forEach(function(str, index){
+	if (index > 0) {
+		idRegExp += '|';
+	}
+	if (str === '{=}') {
+		idRegExp += "^(?:{not})?(?:" + str + ")?[1-9]{1}[0-9]{0,6}$";
+	} else {
+		idRegExp += "^(?:{not})?" + str + "[1-9]{1}[0-9]{0,6}$";
+	}
+});
+
+idRegExp = new RegExp(idRegExp);
+
+const inOperator = ['{in}'];
+
+const betweenOperator = ['btw'];
 
 
 const filters = {
 	id: Joi.alternatives().try(
-		Joi.array().ordered(Joi.string().valid(operators).required(), Joi.number().integer().min(1).required()).unique().description('the user ID PK increment: 1 vs [1,2]'),
-		Joi.array().ordered(
-			Joi.string().valid(operators).required(), Joi.number().integer().min(1).required(),
-			Joi.string().valid(operators).required(), Joi.number().integer().min(1).required()).unique(),
-		Joi.array().ordered(Joi.string().valid(inOperator).required()).items(Joi.number().integer().min(1)).min(1).unique(),
-		Joi.number().integer().min(1).description('the user ID PK increment: 1 vs [1,2]'),
-
+		Joi.array().items(
+			Joi.string().regex(idRegExp)).description('the user ID PK increment: 1 vs [{>}1,{<>}20,{<=}100]'),
+		Joi.number().integer().min(1),
 	),
 
 

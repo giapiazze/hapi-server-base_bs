@@ -5,6 +5,7 @@ const SoftDelete = require('bookshelf-paranoia');
 const BookshelfScopes = require('bookshelf-scopes');
 const BookshelfModelBase = require('bookshelf-modelbase');
 const BookshelfCamelCase = require('bookshelf-camelcase');
+const BookshelfEloquent = require('bookshelf-eloquent');
 
 // create connection to the database
 const Knex = KnexFactory(KnexConfig.development);
@@ -39,6 +40,8 @@ Bookshelf.plugin(SoftDelete);
 Bookshelf.plugin(BookshelfScopes);
 
 Bookshelf.plugin(BookshelfCamelCase);
+
+Bookshelf.plugin(BookshelfEloquent);
 
 
 

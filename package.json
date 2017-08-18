@@ -13,6 +13,7 @@
     "bcrypt": "^1.0.2",
     "bookshelf": "^0.10.4",
     "bookshelf-camelcase": "^2.0.1",
+    "bookshelf-eloquent": "^0.1.7",
     "bookshelf-jsonapi-params": "^1.0.0-beta.2",
     "bookshelf-modelbase": "^2.10.4",
     "bookshelf-paranoia": "^0.11.0",

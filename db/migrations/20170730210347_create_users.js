@@ -8,7 +8,8 @@ exports.up = function(knex, Promise) {
 	  tbl.boolean('is_active').notNullable().defaultTo(false);
 
 	  // DB Validation
-	  tbl.unique(['username', 'password', 'email']);
+	  tbl.unique(['username']);
+	  tbl.unique(['email']);
 
 	  // Timestamp
 	  tbl.timestamp('created_at').defaultTo(knex.fn.now());
