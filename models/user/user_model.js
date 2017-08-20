@@ -1,5 +1,11 @@
 const Bookshelf = require('../bookshelf');
-const Joi = require('joi');
+const UserSchema = require('./user_schema');
+const QueryBase = require('../query/query_base');
+const FilterQR = require('../query/filter_query');
+const FieldsQR = require('../query/fields_query');
+const SortQR = require('../query/sort_query');
+const RelatedQR = require('../query/related_query');
+const PaginateQR = require('../query/pageinate_query');
 
 // related models
 require('../../models/realm/realm_model');
@@ -15,19 +21,14 @@ const User = Bookshelf.Model.extend({
 		hidden: ['password'],
 
 		// validations
-		validate: {
-			id: Joi.number().integer().min(1),
-			username: Joi.string().min(3).max(64),
-			email: Joi.string().email(),
-			is_active: Joi.boolean().valid(true, false),
-		},
+		validate: UserSchema.schemaModel,
 
 		// relationships
 		roles: function () {
-			return this.belongsToMany(Bookshelf._models.Role, 'realms_roles_users');
+			return this.belongsToMany(Bookshelf._models.Role, 'realms_roles_users', 'user_id', 'role_id');
 		},
 		realms: function () {
-			return this.belongsToMany(Bookshelf._models.Realm, 'realms_roles_users')
+			return this.belongsToMany(Bookshelf._models.Realm, 'realms_roles_users', 'user_id', 'realm_id')
 		},
 
 		// roles: function () {
@@ -48,17 +49,39 @@ const User = Bookshelf.Model.extend({
 			onlyActive: function (qb) {
 				qb.where({isActive: true});
 			},
-			filtered: function (qb, filters) {
-				Object.keys(filters).map((e) => {
-					let signal = '=';
-					if (typeof filters[e] === 'object') {
-						signal = 'in';
-					} else if (typeof filters[e] === 'string') {
-						signal = 'LIKE';
-					}
-					qb.where(e, signal, filters[e]);
-				});
+			// filtered: function (qb, filters) {
+			// 	Object.keys(filters).map((e) => {
+			// 		let signal = '=';
+			// 		if (typeof filters[e] === 'object') {
+			// 			signal = 'in';
+			// 		} else if (typeof filters[e] === 'string') {
+			// 			signal = 'LIKE';
+			// 		}
+			// 		qb.where(e, signal, filters[e]);
+			// 	});
+			// },
+			filtered: function(qb, queryData) {
+				if (Object.keys(queryData.filter).length) {
+					return FilterQR.filter2Query(this, queryData.filter);
+				}
 			},
+			selected: function(qb, queryData) {
+				if (Object.keys(queryData.fields).length) {
+					return FieldsQR.fields2Query(this, queryData.fields);
+				}
+			},
+			sorted: function(qb, queryData) {
+				if (queryData.sort.length) {
+					return SortQR.sort2Query(this, queryData.sort);
+				}
+			},
+			related: function(qb, queryData) {
+					return RelatedQR.with2Query(this, queryData);
+			},
+			paginated: function(qb, queryData) {
+				return PaginateQR.page2Query(this, queryData.pagination);
+			},
+
 			filtered_ordered: function (qb, filters, sort) {
 				Object.keys(filters).map((e) => {
 					let signal = '=';
@@ -95,7 +118,6 @@ const User = Bookshelf.Model.extend({
 						qb.where(e, signal, filters[e]);
 					});
 				})
-				.count();
 		},
 	},
 

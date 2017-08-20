@@ -1,12 +1,15 @@
 const Boom = require('boom');
-const User = require('../../../models/user/user_model');
+const _ = require('lodash');
 
-const UserValidation = require('../models/user/user_validations');
+const UserValidation = require('../../../models/user/user_validations');
+const UserSchema = require('../../../models/user/user_schema');
+const PreHandlerBase = require('../../pre_handler_base');
+
 
 
 const UserPre = [
 	{
-		assign: 'queryParsed',
+		assign: 'requestData',
 		method: function (request, reply) {
 
 			let referenceModel = UserValidation;
@@ -14,61 +17,81 @@ const UserPre = [
 			let requestData = {
 				resourceType: 'users',
 				queryData: {
-					include: [],
+					withRelated: [],
 					fields: {},
 					sort: [],
-					page: {},
-					filter: {
-						eql: {},
-						gt: {},
-						gte: {},
-						lt: {},
-						lte: {},
-						like: {},
-						not: {},
-						nll: {},
-						btw: [],
-						in: {},
-					}
+					pagination: {},
+					withFields: {},
+					withSort: {},
+					withCount: [],
+					withFilter: {},
+					filter: {},
+					count: {},
+					error: {},
 				}
 			};
 
+			let queryUrl = request.query;
+			let error = requestData.queryData.error;
+
 			Object.keys(queryUrl).map((e) => {
-				if (referenceModel.filters.hasOwnProperty(e)) {
-					if (typeof queryUrl[e] === 'string') {
-						queryUrl[e] = '%' + queryUrl[e] + '%'
+				if (!Object.keys(error).length > 0) {
+					// Filters
+					if (referenceModel.filters.hasOwnProperty(e)) {
+						if (_.isString(queryUrl[e])) {
+							let tmp = [];
+							tmp.push(queryUrl[e]);
+							queryUrl[e] = tmp;
+						}
+						requestData = PreHandlerBase.filterParser(requestData, e, queryUrl[e], UserSchema);
 					}
-					let tmp = _.split(e, '.');
-					tmp[tmp.length - 1] = _.snakeCase(tmp[tmp.length - 1]);
-					response.filters[_.join(tmp, '.')] = queryUrl[e];
-					let p = 0;
+				}
+
+				if (!Object.keys(error).length > 0) {
+					// SORT
+					if (referenceModel.sort.hasOwnProperty(e)) {
+						if (_.isString(queryUrl[e])) {
+							let tmp = [];
+							tmp.push(queryUrl[e]);
+							queryUrl[e] = tmp;
+						}
+						requestData = PreHandlerBase.sortParser(requestData, queryUrl[e], UserSchema);
+					}
+				}
+
+				if (!Object.keys(error).length > 0) {
+					// Extra
+					if (referenceModel.extra.hasOwnProperty(e)) {
+						if (e === 'count') {
+							requestData.queryData.count = queryUrl[e];
+						} else if (_.isString(queryUrl[e])) {
+							let tmp = [];
+							tmp.push(queryUrl[e]);
+							queryUrl[e] = tmp;
+							requestData = PreHandlerBase.extraParser(requestData, e, queryUrl[e], UserSchema);
+						} else {
+							requestData = PreHandlerBase.extraParser(requestData, e, queryUrl[e], UserSchema);
+						}
+					}
 				}
 			});
-		}
-	},
-	{
-		assign: 'realm',
-		method: function (request, reply) {
 
-			let realmName = request.payload.realm;
-			let user = request.pre.user.attributes;
-
-			Realm
-				.findOne({name: realmName}, {require: false})
-				.then(function(result){
-					let realm = result;
-					if (!realm) {
-						return reply(Boom.unauthorized('Invalid realm'));
-					} else {
-						return reply(realm);
-					}
-				});
-			// .catch(function (error) {
-			// 	let errorMsg = error.message || 'An error occurred';
-			// 	return reply(Boom.gatewayTimeout(errorMsg));
-			// });
+			if (Object.keys(error).length > 0) {
+				return reply(Boom.badRequest(requestData.queryData.error.message));
+			} else {
+				// Pagination
+				let page = parseInt(queryUrl['page']) || 1;
+				let pageSize = parseInt(queryUrl['pageSize']) || 10;
+				requestData.queryData.pagination['offset'] = pageSize * (page - 1);
+				requestData.queryData.pagination['limit'] = pageSize;
+				requestData.queryData.pagination['pageSize'] = pageSize;
+				requestData.queryData.pagination['page'] = page;
+				request.server.log('info', 'RequestData: ' + JSON.stringify(requestData));
+				return reply(requestData);
+			}
 		}
 	},
 ];
+
 
 module.exports = UserPre;

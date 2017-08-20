@@ -1,6 +1,7 @@
 const HeaderValidation = require('../../models/headerValidation');
 const UserValidations = require('../../models/user/user_validations');
 const UserHandlers = require('./user_handlers');
+const UserPre = require('./user_pre/user_pre');
 
 
 module.exports.register = (server, options, next) => {
@@ -22,6 +23,7 @@ module.exports.register = (server, options, next) => {
 					query: UserValidations.query,
 					// headers: HeaderValidation.header,
 				},
+				pre: UserPre,
 			},
 		}
 	]);

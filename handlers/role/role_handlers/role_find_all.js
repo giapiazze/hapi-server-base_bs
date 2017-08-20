@@ -1,7 +1,6 @@
 const Role = require('../../../models/role/role_model');
 const Boom = require('boom');
 
-const HandlerBase = require('../../handler_base');
 const Mapper = require('jsonapi-mapper');
 
 const RoleFindAll =
@@ -9,21 +8,10 @@ const RoleFindAll =
 		roleFindAll: function (request, reply) {
 			let mapper = new Mapper.Bookshelf(request.server.info.uri);
 
-			// let uri = request.server.info.uri;
-
-			let query = HandlerBase.queryParse(request.query, 'role');
-
-
-			let paginationOptions = {
-				page: parseInt(query.pagination.page) || 1,
-				pageSize: parseInt(query.pagination.pageSize) || 10,
-				withRelated: query.pagination.withRelated || [],
-				columns: query.pagination.columns || [],
-			};
+			let requestData = request.pre.requestData;
 
 			let totalCount = 0;
 			let filteredCount = 0;
-
 
 			if (query.extra.count) {
 				Role
