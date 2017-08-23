@@ -2,6 +2,8 @@ const Joi = require('joi');
 const ValidationBase = require('../validation_base');
 const UserSchema = require('./user_schema');
 
+let forString = ValidationBase.filterRegExp('string');
+
 
 const filters = {
 	id: Joi.alternatives().try(
@@ -24,7 +26,7 @@ const filters = {
 		).description('the username: name vs [{=}pippo1,{<>}pippo3,{like}pip]')
 			.example(['{like}rossi', '{like}bianchi']),
 		Joi.string().min(3).regex(ValidationBase.filterRegExp('string'))
-			.example('{in}luigi.rossi,marco.tardelli-gobbo'),
+			.example('{<>}luigi.rossi,marco.tardelli-gobbo'),
 	),
 	email: Joi.alternatives().try(
 		Joi.array().items(
@@ -35,7 +37,7 @@ const filters = {
 		).description('the user email: name vs [{=}pippo1@lol.it,{<>}pippo3@lol.it,{like}pip]')
 			.example(['{like}rossi.it', '{like}verdi.it']),
 		Joi.string().max(255).regex(ValidationBase.filterRegExp('string'))
-			.example('{=}luigi.rossi@eataly.it'),
+			.example('{<>}luigi.rossi@eataly.it'),
 		Joi.string().email(),
 	),
 	isActive: Joi.alternatives().try(

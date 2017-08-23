@@ -5,7 +5,7 @@ const FilterQR = require('../query/filter_query');
 const FieldsQR = require('../query/fields_query');
 const SortQR = require('../query/sort_query');
 const RelatedQR = require('../query/related_query');
-const PaginateQR = require('../query/pageinate_query');
+const PaginateQR = require('../query/paginate_query');
 
 // related models
 require('../../models/realm/realm_model');

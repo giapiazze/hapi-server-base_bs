@@ -180,6 +180,7 @@ const PreHandlerBase = {
 		let withFields = response.queryData.withFields;
 		let withSort = response.queryData.withSort;
 		let withFilter = response.queryData.withFilter;
+		let relatedQuery = response.queryData.relatedQuery;
 		value.forEach(function(el){
 			let responseChanged = false;
 			if (op === 'fields') {
@@ -241,6 +242,9 @@ const PreHandlerBase = {
 				});
 				let realValue = _.replace(el, '{' + relation + '}', '');
 				let columns = _.split(realValue, ',');
+				if (!_.has(relatedQuery, relation)) {
+					relatedQuery[relation] = {};
+				}
 				columns.forEach(function(col){
 					let direction = _.includes(col, '-') ? 'DESC' : 'ASC';
 
@@ -248,10 +252,14 @@ const PreHandlerBase = {
 					if (!_.has(withSort, relation)) {
 						withSort[relation] = [];
 					}
+					if (!_.has(relatedQuery[relation], '{sort}')) {
+						relatedQuery[relation]['{sort}'] = [];
+					}
 					let tmp = [];
 					tmp.push(realValue);
 					tmp.push(direction);
 					withSort[relation].push(tmp);
+					relatedQuery[relation]['{sort}'].push(tmp);
 					if (_.indexOf(withRelated, relation) === -1) {
 						withRelated.push(relation);
 					}
@@ -260,6 +268,7 @@ const PreHandlerBase = {
 			}
 			if (op === 'withFilter' && !responseChanged) {
 				let actualLevel = withFilter;
+				let newLevel = relatedQuery;
 				let relation = '';        // User relation name
 				let attribute = '';       // Relation attribute with condition
 				let dbAttribute = '';     // DB Attribute name (Snake Case);
@@ -300,22 +309,38 @@ const PreHandlerBase = {
 					if (!_.has(withFilter, [[relation.name],[dbAttribute],[orPresent],[notPresent]])) {
 						_.set(withFilter, [[relation.name],[dbAttribute],[orPresent],[notPresent]], {});
 					}
+					if (!_.has(relatedQuery, [[relation.name],[dbAttribute],[orPresent],[notPresent]])) {
+						_.set(relatedQuery, [[relation.name],[dbAttribute],[orPresent],[notPresent]], {});
+					}
 					actualLevel = actualLevel[relation.name][dbAttribute][orPresent][notPresent];
+					newLevel = newLevel[relation.name][dbAttribute][orPresent][notPresent];
 				} else if (orPresent) {
 					if (!_.has(withFilter, [[relation.name],[dbAttribute],[orPresent]])) {
 						_.set(withFilter, [[relation.name],[dbAttribute],[orPresent]], {});
 					}
+					if (!_.has(relatedQuery, [[relation.name],[dbAttribute],[orPresent]])) {
+						_.set(relatedQuery, [[relation.name],[dbAttribute],[orPresent]], {});
+					}
 					actualLevel = actualLevel[relation.name][dbAttribute][orPresent];
+					newLevel = newLevel[relation.name][dbAttribute][orPresent];
 				} else if (notPresent) {
 					if (!_.has(withFilter, [[relation.name],[dbAttribute],[notPresent]])) {
 						_.set(withFilter, [[relation.name],[dbAttribute],[notPresent]], {});
 					}
+					if (!_.has(relatedQuery, [[relation.name],[dbAttribute],[notPresent]])) {
+						_.set(relatedQuery, [[relation.name],[dbAttribute],[notPresent]], {});
+					}
 					actualLevel = actualLevel[relation.name][dbAttribute][notPresent];
+					newLevel = newLevel[relation.name][dbAttribute][notPresent];
 				} else {
 					if (!_.has(withFilter, [[relation.name],[dbAttribute]])) {
 						_.set(withFilter, [[relation.name],[dbAttribute]], {});
 					}
+					if (!_.has(relatedQuery, [[relation.name],[dbAttribute]])) {
+						_.set(relatedQuery, [[relation.name],[dbAttribute]], {});
+					}
 					actualLevel = actualLevel[relation.name][dbAttribute];
+					newLevel = newLevel[relation.name][dbAttribute];
 				}
 
 				// NULL operator
@@ -323,6 +348,9 @@ const PreHandlerBase = {
 					realValue = _.replace(realValue, NullOperator, '');
 					if (!_.has(actualLevel, NullOperator)) {
 						actualLevel[NullOperator] = [];
+					}
+					if (!_.has(newLevel, NullOperator)) {
+						newLevel[NullOperator] = [];
 					}
 				} else if (_.includes(realValue, BtwOperator)) {
 					// BETWEEN operator
@@ -348,6 +376,20 @@ const PreHandlerBase = {
 						});
 						if (!found) {
 							actualLevel[BtwOperator].push(tmp);
+						}
+					}
+					if (!_.has(newLevel, BtwOperator)) {
+						newLevel[BtwOperator] = [];
+						newLevel[BtwOperator].push(tmp);
+					} else {
+						let found = false;
+						newLevel[BtwOperator].forEach(function(cond){
+							if (_.isEqual(cond.sort(), tmp.sort())) {
+								found = true;
+							}
+						});
+						if (!found) {
+							newLevel[BtwOperator].push(tmp);
 						}
 					}
 				} else if (_.includes(realValue, InOperator)) {
@@ -376,6 +418,20 @@ const PreHandlerBase = {
 							actualLevel[InOperator].push(tmp);
 						}
 					}
+					if (!_.has(newLevel, InOperator)) {
+						newLevel[InOperator] = [];
+						newLevel[InOperator].push(tmp);
+					} else {
+						let found = false;
+						newLevel[InOperator].forEach(function(cond){
+							if (_.isEqual(cond.sort(), tmp.sort())) {
+								found = true;
+							}
+						});
+						if (!found) {
+							newLevel[InOperator].push(tmp);
+						}
+					}
 				} else {
 					// LOGICAL operator
 					Operator.some(function(op){
@@ -397,6 +453,14 @@ const PreHandlerBase = {
 							} else {
 								if (!_.includes(actualLevel[op], realValue)) {
 									actualLevel[op].push(realValue);
+								}
+							}
+							if (!_.has(newLevel, op)) {
+								newLevel[op] = [];
+								newLevel[op].push(realValue);
+							} else {
+								if (!_.includes(newLevel[op], realValue)) {
+									newLevel[op].push(realValue);
 								}
 							}
 						}

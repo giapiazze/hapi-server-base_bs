@@ -17,16 +17,18 @@ const UserPre = [
 			let requestData = {
 				resourceType: 'users',
 				queryData: {
-					withRelated: [],
 					fields: {},
+					filter: {},
 					sort: [],
 					pagination: {},
+					count: {},
+					withRelated: [],
 					withFields: {},
+					relatedQuery: {},
+					withFilter: {},
 					withSort: {},
 					withCount: [],
-					withFilter: {},
-					filter: {},
-					count: {},
+					countQuery: {},
 					error: {},
 				}
 			};

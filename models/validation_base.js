@@ -30,29 +30,17 @@ const ValidationBase = {
 	// STRING admitted in Filter types Integer, String, Date
 	filterRegExp: (type) => {
 		let result = '';
-		if (type === 'integer' || type === 'date') {
-			numberOperators.forEach(function(operator, index){
-				if (index > 0) {
-					result += '|';
-				}
-				if (operator === '{=}') {
-					result += "^" + OrOrNot + "(?:" + operator + ")?.+$";
-				} else {
-					result += "^" + OrOrNot + operator + ".+$";
-				}
-			});
-		} else {
-			stringOperators.forEach(function(operator, index){
-				if (index > 0) {
-					result += '|';
-				}
-				if (operator === '{=}') {
-					result += "^" + OrOrNot + "(?:" + operator + ")?.+$";
-				} else {
-					result += "^" + OrOrNot + operator + ".+$";
-				}
-			});
-		}
+
+		nestedOperators.forEach(function(operator, index){
+			if (index > 0) {
+				result += '|';
+			}
+			if (operator === '{=}') {
+				result += "^" + OrOrNot + "(?:" + operator + ")?.+$";
+			} else {
+				result += "^" + OrOrNot + operator + ".+$";
+			}
+		});
 
 		inOperator.forEach(function(operator){
 			result += '|';

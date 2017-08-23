@@ -14,7 +14,7 @@ const UserFindAll =
 			let totalCount = 0;
 			let filteredCount = 0;
 
-			if (requestData.queryData.count) {
+			if (Object.keys(requestData.queryData.count).length > 0) {
 				User
 					.count()
 					.then(function (totCount) {
@@ -26,7 +26,7 @@ const UserFindAll =
 							.filtered(requestData.queryData)
 							.selected(requestData.queryData)
 							.sorted(requestData.queryData)
-							.related(requestData)
+							.related(requestData.queryData)
 							.count()
 							.then(function (fltCount) {
 								if (fltCount.isNaN) {
@@ -82,6 +82,7 @@ const UserFindAll =
 										};
 										let collMap = mapper.map(collection, 'user', mapperOptions);
 										return reply(collMap);
+
 									})
 							})
 					})

@@ -46,8 +46,7 @@ const UserSchema = {
 	],
 	schemaQuery: () => {return Joi.object().keys({
 		id: Joi.number().min(1),
-		username: Joi.string().min(3).max(64).regex(usrRegExp),
-		password: Joi.string().min(1).max(64).regex(pwdRegExp),
+		username: Joi.string().min(1).max(64).regex(usrRegExp),
 		email: Joi.string(),
 		is_active: Joi.boolean().valid(true, false),
 		created_at: Joi.date(),
@@ -57,7 +56,7 @@ const UserSchema = {
 	schemaPayload: () => {return Joi.object().keys({
 		id: Joi.number().min(1),
 		username: Joi.string().min(3).max(64).regex(usrRegExp).required(),
-		password: Joi.string().min(1).max(64).regex(pwdRegExp).required(),
+		password: Joi.string().min(3).max(64).regex(pwdRegExp).required(),
 		email: Joi.string().email().required(),
 		isActive: Joi.boolean().valid(true, false).required(),
 		createdAt: Joi.date(),
@@ -67,7 +66,7 @@ const UserSchema = {
 	schemaModel: Joi.object().keys({
 		id: Joi.number().min(1),
 		username: Joi.string().min(3).max(64).required(),
-		password: Joi.string().min(1).max(64).required(),
+		password: Joi.string().min(3).max(64).required(),
 		email: Joi.string().email().required(),
 		is_active: Joi.boolean().valid(true, false).required(),
 		created_at: Joi.date(),

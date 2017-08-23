@@ -14,22 +14,22 @@ const OrOperator = '{or}';
 const NotOperator = '{not}';
 
 
-function call(q){
-	Object.keys(withFilter[rel]).forEach(function(key) {
-		Object.keys(withFilter[rel][key]).map((op) => {
+function call(q, rel, relatedQuery){
+	Object.keys(relatedQuery[rel]).forEach(function(key) {
+		Object.keys(relatedQuery[rel][key]).map((op) => {
 			if (_.includes(Operator, op)) {
 				let signal = _.replace(_.replace(op, '}', ''), '{', '');
-				withFilter[rel][key][op].forEach(function(value){
+				relatedQuery[rel][key][op].forEach(function(value){
 					q.where(key, signal, value);
 				});
 			}
 			if (_.includes(InOperator, op)) {
-				withFilter[rel][key][op].forEach(function(value){
+				relatedQuery[rel][key][op].forEach(function(value){
 					q.whereIn(key, value);
 				});
 			}
 			if (_.includes(BtwOperator, op)) {
-				withFilter[rel][key][op].forEach(function(value){
+				relatedQuery[rel][key][op].forEach(function(value){
 					q.whereBetween(key, value[0], value[1]);
 				});
 			}
@@ -37,7 +37,7 @@ function call(q){
 				q.whereNull(key);
 			}
 			if (_.includes(OrOperator, op)) {
-				let orKeys = withFilter[rel][key][op];
+				let orKeys = relatedQuery[rel][key][op];
 				Object.keys(orKeys).map((orOp) => {
 					if (_.includes(Operator, orOp)) {
 						let signal = _.replace(_.replace(orOp, '}', ''), '{', '');
@@ -59,7 +59,7 @@ function call(q){
 						q.orWhereNull(key);
 					}
 					if (_.includes(NotOperator, orOp)){
-						let orNotKeys = withFilter[rel][key][op][orOp];
+						let orNotKeys = relatedQuery[rel][key][op][orOp];
 						Object.keys(orNotKeys).map((orNotOp) => {
 							if (_.includes(Operator, orNotOp)) {
 								let signal = _.replace(_.replace(orNotOp, '}', ''), '{', '');
@@ -85,7 +85,7 @@ function call(q){
 				});
 			}
 			if (_.includes(NotOperator, op)){
-				let notKeys = withFilter[rel][key][op];
+				let notKeys = relatedQuery[rel][key][op];
 				Object.keys(notKeys).map((notOp) => {
 					if (_.includes(Operator, notOp)) {
 						let signal = _.replace(_.replace(notOp, '}', ''), '{', '');
@@ -108,7 +108,15 @@ function call(q){
 					}
 				});
 			}
-		})
+		});
+
+		Object.keys(relatedQuery[rel]).map((op) => {
+			if (_.includes('{sort}', op)) {
+				relatedQuery[rel][op].forEach(function(col){
+					q.orderBy(col[0], col[1]);
+				});
+			}
+		});
 	});
 }
 
@@ -120,31 +128,39 @@ const RelatedQR = {
 		let withFilter = queryData.withFilter;
 		let withFields = queryData.withFields;
 		let withRelated = queryData.withRelated;
+		let relatedQuery = queryData.relatedQuery;
 		if (withCount.length) {
 			model.withCount(withCount)
-		} else if (Object.keys(withFilter).length && Object.keys(withFields).length) {
+		} else if (Object.keys(relatedQuery).length && Object.keys(withFields).length) {
 			Object.keys(withFields).map((rel) => {
-				if (_.has(withFilter, rel)) {
-					model.withSelect(rel, withFields[rel], call);
+				if (_.has(relatedQuery, rel)) {
+					model.withSelect(rel, withFields[rel], (q) => {
+						call(q, rel, relatedQuery)
+					});
 				} else {
 					model.withSelect(rel, withFields[rel]);
 				}
 			});
-			Object.keys(withFilter).map((rel) => {
+			Object.keys(relatedQuery).map((rel) => {
 				if (!_.has(withFields, rel)) {
-					model.with(rel, call);
+					model.with(rel, (q) => {
+						call(q, rel, relatedQuery)
+					});
 				}
 			});
 
-		} else if (Object.keys(withFilter).length) {
-			Object.keys(withFilter).map((rel) => {
-				model.with(rel, call);
+		} else if (Object.keys(relatedQuery).length) {
+			Object.keys(relatedQuery).map((rel) => {
+				model.with(rel, (q) => {
+					call(q, rel, relatedQuery)
+				});
 			});
 
 		} else if (Object.keys(withFields).length) {
 			Object.keys(withFields).map((rel) => {
 				model.withSelect(rel, withFields[rel])
 			});
+
 		} else if (Object.keys(withRelated).length) {
 				model.with(withRelated);
 		}
