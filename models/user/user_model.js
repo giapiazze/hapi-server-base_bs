@@ -6,10 +6,14 @@ const FieldsQR = require('../query/fields_query');
 const SortQR = require('../query/sort_query');
 const RelatedQR = require('../query/related_query');
 const PaginateQR = require('../query/paginate_query');
+const Pluralize = require('pluralize');
+
+const _ = require('lodash');
 
 // related models
 require('../../models/realm/realm_model');
 require('../../models/role/role_model');
+require('../../models/realms_roles_users/realms_roles_users_model');
 
 
 const User = Bookshelf.Model.extend({
@@ -25,10 +29,15 @@ const User = Bookshelf.Model.extend({
 
 		// relationships
 		roles: function () {
-			return this.belongsToMany(Bookshelf._models.Role, 'realms_roles_users', 'user_id', 'role_id');
+			return this.belongsToMany(Bookshelf._models.Role, 'realms_roles_users', 'user_id', 'role_id')
+				.withPivot(['realm_id'])
 		},
 		realms: function () {
 			return this.belongsToMany(Bookshelf._models.Realm, 'realms_roles_users', 'user_id', 'realm_id')
+				.withPivot(['role_id']);
+		},
+		realmsRolesUsers: function () {
+			return this.hasMany(Bookshelf._models.RealmsRolesUsers, 'user_id');
 		},
 
 		// roles: function () {
@@ -62,24 +71,30 @@ const User = Bookshelf.Model.extend({
 			// },
 			filtered: function(qb, queryData) {
 				if (Object.keys(queryData.filter).length) {
-					return FilterQR.filter2Query(this, queryData.filter);
+					return FilterQR.filter2Query(qb, queryData.filter);
 				}
 			},
 			selected: function(qb, queryData) {
 				if (Object.keys(queryData.fields).length) {
-					return FieldsQR.fields2Query(this, queryData.fields);
+					return FieldsQR.fields2Query(qb, queryData.fields);
 				}
 			},
 			sorted: function(qb, queryData) {
 				if (queryData.sort.length) {
-					return SortQR.sort2Query(this, queryData.sort);
+					return SortQR.sort2Query(qb, queryData.sort);
 				}
 			},
 			related: function(qb, queryData) {
-					return RelatedQR.with2Query(this, queryData);
+				let related = [];
+
+				// return RelatedQR.with2Query(this, queryData);
 			},
 			paginated: function(qb, queryData) {
-				return PaginateQR.page2Query(this, queryData.pagination);
+				return PaginateQR.page2Query(qb, queryData.pagination);
+			},
+			printQuery: function(qb, request) {
+				qb.debug(true);
+				request.server.log('sql', qb.toString());
 			},
 
 			filtered_ordered: function (qb, filters, sort) {
@@ -118,6 +133,40 @@ const User = Bookshelf.Model.extend({
 						qb.where(e, signal, filters[e]);
 					});
 				})
+		},
+		withRelated: function(queryData) {
+			let related = [];
+			let bsModel = Bookshelf._models['RealmsRolesUsers'];
+
+			_.mapValues(queryData.withRelated, function(value) {
+				if (_.has(queryData.withFields, value) || _.has(queryData.relatedQuery, value)) {
+					let bsModelName = Pluralize.singular(_.upperFirst(value));
+					let bsPivotName = _.upperFirst(value);
+					let bsModel = Bookshelf._models[bsPivotName] || Bookshelf._models[bsModelName];
+
+					let relation = value;
+					let relationObject = {[value]: function(qb) {
+						let fields = queryData.withFields[value];
+						let filters = queryData.withFilter[value];
+
+						if (fields) {
+							qb = FieldsQR.withFields2Query(qb, fields);
+						}
+						if (filters) {
+						qb = FilterQR.filter2Query(qb, filters);
+						}
+
+					}
+					};
+
+					related.push(relation, relationObject);
+				} else {
+					let relation = value;
+					related.push(relation);
+				}
+
+			});
+			return related;
 		},
 	},
 

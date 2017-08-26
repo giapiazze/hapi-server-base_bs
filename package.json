@@ -38,6 +38,7 @@
     "knex-migrate": "^1.3.0",
     "lodash": "^4.17.4",
     "mysql": "^2.14.1",
+    "pluralize": "^7.0.0",
     "vision": "^4.1.1"
   }
 }

@@ -15,27 +15,27 @@ const NotOperator = '{not}';
 
 const FilterQR = {
 
-	filter2Query: (model, filter) => {
+	filter2Query: (qb, filter) => {
 		Object.keys(filter).forEach(function(key) {
 			Object.keys(filter[key]).map((op) => {
 				if (_.includes(Operator, op)) {
 					let signal = _.replace(_.replace(op, '}', ''), '{', '');
 					filter[key][op].forEach(function(value){
-						model.where(key, signal, value);
+						qb.where(key, signal, value);
 					});
 				}
 				if (_.includes(InOperator, op)) {
 					filter[key][op].forEach(function(value){
-						model.whereIn(key, value);
+						qb.whereIn(key, value);
 					});
 				}
 				if (_.includes(BtwOperator, op)) {
 					filter[key][op].forEach(function(value){
-						model.whereBetween(key, value[0], value[1]);
+						qb.whereBetween(key, value[0], value[1]);
 					});
 				}
 				if (_.includes(NullOperator, op)) {
-					model.whereNull(key);
+					qb.whereNull(key);
 				}
 				if (_.includes(OrOperator, op)) {
 					let orKeys = filter[key][op];
@@ -43,21 +43,21 @@ const FilterQR = {
 						if (_.includes(Operator, orOp)) {
 							let signal = _.replace(_.replace(orOp, '}', ''), '{', '');
 							orKeys[orOp].forEach(function(value){
-								model.orWhere(key, signal, value);
+								qb.orWhere(key, signal, value);
 							});
 						}
 						if (_.includes(InOperator, orOp)) {
 							orKeys[orOp].forEach(function(value){
-								model.orWhereIn(key, value);
+								qb.orWhereIn(key, value);
 							});
 						}
 						if (_.includes(BtwOperator, orOp)) {
 							orKeys[op][orOp].forEach(function(value){
-								model.orWhereBetween(key, value[0], value[1]);
+								qb.orWhereBetween(key, value[0], value[1]);
 							});
 						}
 						if (_.includes(NullOperator, orOp)) {
-							model.orWhereNull(key);
+							qb.orWhereNull(key);
 						}
 						if (_.includes(NotOperator, orOp)){
 							let orNotKeys = filter[key][op][orOp];
@@ -65,21 +65,21 @@ const FilterQR = {
 								if (_.includes(Operator, orNotOp)) {
 									let signal = _.replace(_.replace(orNotOp, '}', ''), '{', '');
 									orNotKeys[orNotOp].forEach(function(value){
-										model.orWhereNot(key, signal, value);
+										qb.orWhereNot(key, signal, value);
 									});
 								}
 								if (_.includes(InOperator, orNotOp)) {
 									orNotKeys[orNotOp].forEach(function(value){
-										model.orWhereNotIn(key, value);
+										qb.orWhereNotIn(key, value);
 									});
 								}
 								if (_.includes(BtwOperator, orNotOp)) {
 									orNotKeys[orNotOp].forEach(function(value){
-										model.orWhereNotBetween(key, value[0], value[1]);
+										qb.orWhereNotBetween(key, value[0], value[1]);
 									});
 								}
 								if (_.includes(NullOperator, orNotOp)) {
-									model.orWhereNotNull(key);
+									qb.orWhereNotNull(key);
 								}
 							});
 						}
@@ -91,28 +91,28 @@ const FilterQR = {
 						if (_.includes(Operator, notOp)) {
 							let signal = _.replace(_.replace(notOp, '}', ''), '{', '');
 							notKeys[notOp].forEach(function(value){
-								model.whereNot(key, signal, value);
+								qb.whereNot(key, signal, value);
 							});
 						}
 						if (_.includes(InOperator, notOp)) {
 							notKeys[notOp].forEach(function(value){
-								model.whereNotIn(key, value);
+								qb.whereNotIn(key, value);
 							});
 						}
 						if (_.includes(BtwOperator, notOp)) {
 							notKeys[notOp].forEach(function(value){
-								model.whereNotBetween(key, value[0], value[1]);
+								qb.whereNotBetween(key, value[0], value[1]);
 							});
 						}
 						if (_.includes(NullOperator, notOp)) {
-							model.whereNotNull(key);
+							qb.whereNotNull(key);
 						}
 					});
 				}
 			})
 		});
 
-		return model;
+		return qb;
 	}
 
 };

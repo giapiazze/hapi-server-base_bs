@@ -29,6 +29,7 @@ const UserPre = [
 					withSort: {},
 					withCount: [],
 					countQuery: {},
+					innerFields: {},
 					error: {},
 				}
 			};

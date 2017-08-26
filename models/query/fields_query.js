@@ -3,12 +3,19 @@ const _ = require('lodash');
 
 const FieldsQR = {
 
-	fields2Query: (model, fields) => {
+	fields2Query: (qb, fields) => {
 		Object.keys(fields).forEach(function(key) {
-			model.select(fields[key]);
+			qb.select(fields[key]);
 		});
 
-		return model;
+		return qb;
+	},
+
+	withFields2Query: (qb, fields) => {
+		qb.select(fields);
+
+
+		return qb;
 	}
 
 };

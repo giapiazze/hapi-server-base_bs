@@ -169,14 +169,14 @@ const LoginPre = [
 			let roles = [];
 
 			User
-				.findOne({id: user.id},
-					{withRelated: ['roles', {
+				.findOne({id: user.id},{withRelated: ['roles', {
 						'roles': function (qb) {
-							qb.where('roles.realm_id', '=', realm.id);
+							qb.where('realms_roles_users.realm_id', '=', realm.id);
 						}}]
 					})
 				.then(function(result){
-					roles = result.related('roles');
+					let user = result;
+					roles = user.relations['roles'].models;
 					if(roles && roles.length){
 						return reply(roles);
 					} else {
@@ -206,7 +206,7 @@ const LoginPre = [
 			scope = scope.concat('Realm-'+realm.id);
 
 			// Add Roles to Scope
-			roles.each(function (role){
+			roles.forEach(function (role){
 				if (role.attributes.name.indexOf('User') !== -1) {
 					scope = scope.concat(role.attributes.name+'-'+request.pre.user.attributes.id)
 				} else {

@@ -3,12 +3,12 @@ const _ = require('lodash');
 
 const SortQR = {
 
-	sort2Query: (model, columns) => {
+	sort2Query: (qb, columns) => {
 		columns.forEach(function(col){
-			model.orderBy(col[0], col[1]);
+			qb.orderBy(col[0], col[1]);
 		});
 
-		return model;
+		return qb;
 	}
 
 };

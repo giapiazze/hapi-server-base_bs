@@ -99,15 +99,19 @@ const extra = {
 	count: Joi.boolean().description('only number of records found'),
 	fields: Joi.alternatives().try(
 		Joi.array().description('selected attributes: [{user}]id, [id, username, {user}email]')
-			.items(Joi.string().max(255).regex(ValidationBase.fieldRegExp(UserSchema))),
+			.items(Joi.string().max(255)
+				.regex(ValidationBase.fieldRegExp(UserSchema))
+				.example('{user}id'))
+			.example(['{user}email','username']),
 		Joi.string().max(255)
 			.regex(ValidationBase.fieldRegExp(UserSchema))
+			.example('{user}id,username')
 	),
 	withRelated: Joi.alternatives().try(
 		Joi.array().description('includes relationships: roles, [roles, realms]')
 			.items(Joi.string().max(255)
 				.regex(ValidationBase.withRelatedRegExp(UserSchema)))
-			.example(['realms','roles']),
+			.example(['realms','roles', 'realmsRolesUsers']),
 		Joi.string().max(255).description('relationships: roles, [roles, realms]')
 			.regex(ValidationBase.withRelatedRegExp(UserSchema))
 			.example('realms')

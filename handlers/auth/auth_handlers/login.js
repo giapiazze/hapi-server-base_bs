@@ -36,10 +36,15 @@ const Login =
 
 			User
 				.findOne({ id: user.id },
-					{withRelated: ['roles', {
-						'roles': function (qb) {
-							qb.where('roles.realm_id', '=', realm.id);
-						}}, 'roles.realm']
+					{withRelated: [
+						'roles', {
+							'roles': function (qb) {
+								qb.where('realms_roles_users.realm_id', '=', realm.id);
+							}},
+						'realms', {
+							'realms': function (qb) {
+								qb.where('realms_roles_users.realm_id', '=', realm.id);
+							}}]
 					})
 				.then(function (result) {
 					user = result;

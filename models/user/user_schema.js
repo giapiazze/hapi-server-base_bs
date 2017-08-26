@@ -1,6 +1,7 @@
 const Joi = require('joi');
 const RoleSchema = require('../role/role_schema');
 const RealmSchema = require('../realm/realm_schema');
+const RealmsRolesUsersSchema = require('../realms_roles_users/realms_roles_users_schema');
 
 const usrString = "^([a-zA-Z0-9]+[_.-]?)*[a-zA-Z0-9]$";                   // alt(a-zA-Z0-9||_.-) always ends with a-zA-Z0-9 no max length
 const pwdString = "^[a-zA-Z0-9àèéìòù\.\,\;\:\-\_\|@&%$]{3,}$";
@@ -87,6 +88,13 @@ const UserSchema = {
 			attributes: () => {return RoleSchema.attributes},
 			relations: () => {return RoleSchema.relations},
 			schemaQuery: () => {return RoleSchema.schemaQuery()},
+		},
+		{
+			name: 'realmsRolesUsers',
+			modelSchema: () => {return RealmsRolesUsersSchema},
+			attributes: () => {return RealmsRolesUsersSchema.attributes},
+			relations: () => {return RealmsRolesUsersSchema.relations},
+			schemaQuery: () => {return RealmsRolesUsersSchema.schemaQuery()},
 		},
 	],
 

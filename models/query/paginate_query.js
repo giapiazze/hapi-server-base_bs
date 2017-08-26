@@ -3,10 +3,10 @@ const _ = require('lodash');
 
 const PaginateQR = {
 
-	page2Query: (model, paginate) => {
-		model.offset(paginate.offset).limit(paginate.limit);
+	page2Query: (qb, paginate) => {
+		qb.offset(paginate.offset).limit(paginate.limit);
 
-		return model;
+		return qb;
 	}
 
 };

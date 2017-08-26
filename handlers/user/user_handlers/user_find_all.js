@@ -14,7 +14,7 @@ const UserFindAll =
 			let totalCount = 0;
 			let filteredCount = 0;
 
-			if (Object.keys(requestData.queryData.count).length > 0) {
+			if (requestData.queryData.count && requestData.queryData.count === true) {
 				User
 					.count()
 					.then(function (totCount) {
@@ -24,9 +24,9 @@ const UserFindAll =
 						totalCount = totCount;
 						User
 							.filtered(requestData.queryData)
-							.selected(requestData.queryData)
-							.sorted(requestData.queryData)
-							.related(requestData.queryData)
+							// .sorted(requestData.queryData)
+							// .related(requestData.queryData)
+							.printQuery(request)
 							.count()
 							.then(function (fltCount) {
 								if (fltCount.isNaN) {
@@ -64,7 +64,8 @@ const UserFindAll =
 									.sorted(requestData.queryData)
 									.related(requestData.queryData)
 									.paginated(requestData.queryData)
-									.get()
+									.printQuery(request)
+									.fetchAll({withRelated: User.withRelated(requestData.queryData)})
 									.then(function (collection) {
 										if (!collection) {
 											return reply(Boom.badRequest('No users'));
