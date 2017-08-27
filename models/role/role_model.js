@@ -8,12 +8,16 @@ let Role = Bookshelf.Model.extend({
 		tableName: 'roles',
 
 		softDelete: true,
-		hasTimestamps: true,
+		hasTimestamps: ['createdAt', 'updatedAt'],
 
 		// relationships
 		users: function () {
-			return this.belongsToMany(Bookshelf._models.User, 'realms_roles_users');
+			return this.belongsToMany(Bookshelf.model('User'), 'realms_roles_users', 'roleId', 'userId');
 		},
+		realmsRolesUsers: function () {
+			return this.hasMany(Bookshelf.model('RealmsRolesUsers'), 'roleId');
+		},
+
 
 		// scopes
 		scopes: {

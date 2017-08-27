@@ -13,14 +13,14 @@ const _ = require('lodash');
 // related models
 require('../../models/realm/realm_model');
 require('../../models/role/role_model');
-require('../../models/realms_roles_users/realms_roles_users_model');
+require('../realms_roles_users/realms_roles_users_model');
 
 
 const User = Bookshelf.Model.extend({
 		tableName: 'users',
 
 		softDelete: true,
-		hasTimestamps: true,
+		hasTimestamps: ['createdAt', 'updatedAt'],
 
 		hidden: ['password'],
 
@@ -29,15 +29,15 @@ const User = Bookshelf.Model.extend({
 
 		// relationships
 		roles: function () {
-			return this.belongsToMany(Bookshelf._models.Role, 'realms_roles_users', 'user_id', 'role_id')
-				.withPivot(['realm_id'])
+			return this.belongsToMany(Bookshelf.model('Role'), 'realms_roles_users', 'userId', 'roleId')
+				.withPivot(['realmId'])
 		},
 		realms: function () {
-			return this.belongsToMany(Bookshelf._models.Realm, 'realms_roles_users', 'user_id', 'realm_id')
-				.withPivot(['role_id']);
+			return this.belongsToMany(Bookshelf.model('Realm'), 'realms_roles_users', 'userId', 'realmId')
+				.withPivot(['roleId']);
 		},
 		realmsRolesUsers: function () {
-			return this.hasMany(Bookshelf._models.RealmsRolesUsers, 'user_id');
+			return this.hasMany(Bookshelf.model('RealmsRolesUsers'), 'userId');
 		},
 
 		// roles: function () {

@@ -42,7 +42,9 @@ const LoginPre = [
 			let user = {};
 
 			if (username) {
-				User.findOne({ username: username }, {require: false})
+				User
+					.where({ username: username })
+					.first()
 					.then(function (result) {
 						if (!result) {
 							return reply(Boom.unauthorized('Invalid username or password'));
@@ -61,8 +63,9 @@ const LoginPre = [
 						return reply(Boom.gatewayTimeout(errorMsg));
 					});
 			} else if (email) {
-				User.findOne({email: email}, {require: false})
-					.fetch()
+				User
+					.where({email: email})
+					.first()
 					.then(function (result) {
 						if (!result) {
 							return reply(Boom.unauthorized('Invalid email or password'));
@@ -92,7 +95,8 @@ const LoginPre = [
 			let user = request.pre.user.attributes;
 
 			Realm
-				.findOne({name: realmName}, {require: false})
+				.where({name: realmName})
+				.first()
 				.then(function(result){
 					let realm = result;
 					if (!realm) {
@@ -169,14 +173,19 @@ const LoginPre = [
 			let roles = [];
 
 			User
-				.findOne({id: user.id},{withRelated: ['roles', {
-						'roles': function (qb) {
-							qb.where('realms_roles_users.realm_id', '=', realm.id);
-						}}]
-					})
+				.where({id: user.id})
+				.with({
+					'realmsRolesUsers': (q) => {
+						q.where({realmId: realm.id})
+					},
+					'realmsRolesUsers.role': null
+				})
+				.first()
 				.then(function(result){
 					let user = result;
-					roles = user.relations['roles'].models;
+					user.relations.realmsRolesUsers.forEach(function(rru){
+						roles.push(rru.relations.role);
+					});
 					if(roles && roles.length){
 						return reply(roles);
 					} else {

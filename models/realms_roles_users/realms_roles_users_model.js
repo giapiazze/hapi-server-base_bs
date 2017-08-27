@@ -6,26 +6,23 @@ const SortQR = require('../query/sort_query');
 const RelatedQR = require('../query/related_query');
 const PaginateQR = require('../query/paginate_query');
 
-// related models
-require('../../models/realm/realm_model');
-require('../../models/role/role_model');
-require('../../models/user/user_model');
+
 
 const RealmsRolesUsers = Bookshelf.Model.extend({
 		tableName: 'realms_roles_users',
 
 		softDelete: true,
-		hasTimestamps: true,
+		hasTimestamps: ['createdAt', 'updatedAt'],
 
 		// relationships
 		realm: function () {
-			return this.belongsTo(Bookshelf._models.Realm)
+			return this.belongsTo(Bookshelf.model('Realm'), 'realmId')
 		},
 		role: function () {
-			return this.belongsTo(Bookshelf._models.Role)
+			return this.belongsTo(Bookshelf.model('Role'), 'roleId');
 		},
 		user: function () {
-			return this.belongsTo('User', 'id');
+			return this.belongsTo(Bookshelf.model('User'), 'userId');
 		},
 		// scopes
 		scopes: {

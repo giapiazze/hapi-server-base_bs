@@ -1,20 +1,20 @@
 // Roles References:
-// role_id: 1 => User
-// role_id: 2 => Admin
-// role_id: 3 => SuperAdmin
-// realm_id: 1 => GameApp
-// realm_id: 2 => WebApp
-// realm_id: 3 => WebJson
+// roleId: 1 => User
+// roleId: 2 => Admin
+// roleId: 3 => SuperAdmin
+// realmId: 1 => GameApp
+// realmId: 2 => WebApp
+// realmId: 3 => WebJson
 
 
 const array = [
-	{realm_id: 1, role_id: 2, user_id: 1},
-	{realm_id: 1, role_id: 3, user_id: 2},
-	{realm_id: 1, role_id: 1, user_id: 3},
-	{realm_id: 2, role_id: 1, user_id: 1},
-	{realm_id: 2, role_id: 2, user_id: 3},
-	{realm_id: 3, role_id: 1, user_id: 1},
-	{realm_id: 3, role_id: 2, user_id: 2},
+	{realmId: 1, roleId: 2, userId: 1},
+	{realmId: 1, roleId: 3, userId: 2},
+	{realmId: 1, roleId: 1, userId: 3},
+	{realmId: 2, roleId: 1, userId: 1},
+	{realmId: 2, roleId: 2, userId: 3},
+	{realmId: 3, roleId: 1, userId: 1},
+	{realmId: 3, roleId: 2, userId: 2},
 ];
 
 module.exports = array;

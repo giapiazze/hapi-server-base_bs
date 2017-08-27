@@ -4,26 +4,26 @@ exports.up = function(knex, Promise) {
 		tbl.increments('id').primary();
 
 		// Foreign Keys
-		tbl.integer('realm_id')
+		tbl.integer('realmId')
 			.unsigned()
 			.notNullable()
 			.references('realms.id');
-		tbl.integer('role_id')
+		tbl.integer('roleId')
 			.unsigned()
 			.notNullable()
 			.references('roles.id');
-		tbl.integer('user_id')
+		tbl.integer('userId')
 			.unsigned()
 			.notNullable()
 			.references('users.id');
 
 		// DB Validation
-		tbl.unique(['realm_id', 'role_id', 'user_id']);
+		tbl.unique(['realmId', 'roleId', 'userId']);
 
 		// Timestamp
-		tbl.timestamp('created_at').defaultTo(knex.fn.now());
-		tbl.timestamp('updated_at').defaultTo(knex.fn.now());
-		tbl.timestamp('deleted_at').nullable();
+		tbl.timestamp('createdAt').defaultTo(knex.fn.now());
+		tbl.timestamp('updatedAt').defaultTo(knex.fn.now());
+		tbl.timestamp('deletedAt').nullable();
 	});
 };
 

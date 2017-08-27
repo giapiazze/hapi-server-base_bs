@@ -35,17 +35,15 @@ const Login =
 			}
 
 			User
-				.findOne({ id: user.id },
-					{withRelated: [
-						'roles', {
-							'roles': function (qb) {
-								qb.where('realms_roles_users.realm_id', '=', realm.id);
-							}},
-						'realms', {
-							'realms': function (qb) {
-								qb.where('realms_roles_users.realm_id', '=', realm.id);
-							}}]
-					})
+				.where({ id: user.id })
+				.with({
+					'realmsRolesUsers': (q) => {
+						q.where({realmId: realm.id})
+					},
+					'realmsRolesUsers.role': null,
+					'realmsRolesUsers.realm': null,
+				})
+				.first()
 				.then(function (result) {
 					user = result;
 					const mapperOptions = {

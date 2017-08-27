@@ -22,7 +22,6 @@ const PreHandlerBase = {
 			let innerLevel = response.queryData.innerFields;
 			let tableName = schema.table;
 			let error = response.queryData.error;
-			let dbAttribute = _.snakeCase(key);     // DB Attribute name (Snake Case);
 			let orPresent = '';
 			let notPresent = '';
 			let realValue = el;       // Final condition value;
@@ -37,41 +36,41 @@ const PreHandlerBase = {
 				realValue = _.replace(realValue, NotOperator, '');
 			}
 			if (orPresent && notPresent) {
-				if (!_.has(actualLevel, [[dbAttribute],[orPresent],[notPresent]])) {
-					_.set(actualLevel, [[dbAttribute],[orPresent],[notPresent]], {});
+				if (!_.has(actualLevel, [[key],[orPresent],[notPresent]])) {
+					_.set(actualLevel, [[key],[orPresent],[notPresent]], {});
 				}
-				if (!_.has(innerLevel, [[tableName],[dbAttribute],[orPresent],[notPresent]])) {
-					_.set(innerLevel, [[tableName],[dbAttribute],[orPresent],[notPresent]], {});
+				if (!_.has(innerLevel, [[tableName],[key],[orPresent],[notPresent]])) {
+					_.set(innerLevel, [[tableName],[key],[orPresent],[notPresent]], {});
 				}
-				actualLevel = actualLevel[dbAttribute][orPresent][notPresent];
-				innerLevel = innerLevel[tableName][dbAttribute][orPresent][notPresent];
+				actualLevel = actualLevel[key][orPresent][notPresent];
+				innerLevel = innerLevel[tableName][key][orPresent][notPresent];
 			} else if (orPresent) {
-				if (!_.has(actualLevel, [[dbAttribute],[orPresent]])) {
-					_.set(actualLevel, [[dbAttribute],[orPresent]], {});
+				if (!_.has(actualLevel, [[key],[orPresent]])) {
+					_.set(actualLevel, [[key],[orPresent]], {});
 				}
-				if (!_.has(innerLevel, [[tableName],[dbAttribute],[orPresent]])) {
-					_.set(innerLevel, [[tableName],[dbAttribute],[orPresent]], {});
+				if (!_.has(innerLevel, [[tableName],[key],[orPresent]])) {
+					_.set(innerLevel, [[tableName],[key],[orPresent]], {});
 				}
-				actualLevel = actualLevel[dbAttribute][orPresent];
-				innerLevel = innerLevel[tableName][dbAttribute][orPresent];
+				actualLevel = actualLevel[key][orPresent];
+				innerLevel = innerLevel[tableName][key][orPresent];
 			} else if (notPresent) {
-				if (!_.has(actualLevel, [[dbAttribute],[notPresent]])) {
-					_.set(actualLevel, [[dbAttribute],[notPresent]], {});
+				if (!_.has(actualLevel, [[key],[notPresent]])) {
+					_.set(actualLevel, [[key],[notPresent]], {});
 				}
-				if (!_.has(innerLevel, [[tableName],[dbAttribute],[notPresent]])) {
-					_.set(innerLevel, [[tableName],[dbAttribute],[notPresent]], {});
+				if (!_.has(innerLevel, [[tableName],[key],[notPresent]])) {
+					_.set(innerLevel, [[tableName],[key],[notPresent]], {});
 				}
-				actualLevel = actualLevel[dbAttribute][notPresent];
-				innerLevel = innerLevel[tableName][dbAttribute][notPresent];
+				actualLevel = actualLevel[key][notPresent];
+				innerLevel = innerLevel[tableName][key][notPresent];
 			} else {
-				if (!_.has(actualLevel, [dbAttribute])) {
-					_.set(actualLevel, [dbAttribute], {});
+				if (!_.has(actualLevel, [key])) {
+					_.set(actualLevel, [key], {});
 				}
-				if (!_.has(innerLevel, [[tableName],[dbAttribute]])) {
-					_.set(innerLevel, [[tableName],[dbAttribute]], {});
+				if (!_.has(innerLevel, [[tableName],[key]])) {
+					_.set(innerLevel, [[tableName],[key]], {});
 				}
-				actualLevel = actualLevel[dbAttribute];
-				innerLevel = innerLevel[tableName][dbAttribute];
+				actualLevel = actualLevel[key];
+				innerLevel = innerLevel[tableName][key];
 			}
 
 			// innerObject and filters
@@ -87,7 +86,7 @@ const PreHandlerBase = {
 				realValue = _.replace(realValue, BtwOperator, '');
 				let tmp = _.split(realValue, ',');
 				tmp.forEach(function(value){
-					const result = Joi.validate({ [dbAttribute]: value }, schema.schemaQuery());
+					const result = Joi.validate({ [key]: value }, schema.schemaQuery());
 					if (result.error) {
 						error['message'] = result.error.message;
 						return response;
@@ -115,7 +114,7 @@ const PreHandlerBase = {
 				realValue = _.replace(realValue, InOperator, '');
 				let tmp = _.split(realValue, ',');
 				tmp.forEach(function(value){
-					const result = Joi.validate({ [dbAttribute]: value }, schema.schemaQuery());
+					const result = Joi.validate({ [key]: value }, schema.schemaQuery());
 					if (result.error) {
 						error['message'] = result.error.message;
 						return response;
@@ -153,7 +152,7 @@ const PreHandlerBase = {
 				Operator.some(function (op) {
 					if (_.includes(realValue, op)) {
 						realValue = _.replace(realValue, op, '');
-						const result = Joi.validate({[dbAttribute]: realValue}, schema.schemaQuery());
+						const result = Joi.validate({[key]: realValue}, schema.schemaQuery());
 						if (result.error) {
 							error['message'] = result.error.message;
 							return response;
@@ -302,8 +301,8 @@ const PreHandlerBase = {
 				}
 				let tmp = _.split(realValue, ',');
 				tmp.forEach(function(col){
-					withFields[relation].push(_.snakeCase(col));
-					innerObject['{fields}'].push(table + '.' + _.snakeCase(col));
+					withFields[relation].push(col);
+					innerObject['{fields}'].push(table + '.' + col);
 				});
 				// withFields[relation].push(realValue);
 				// if (_.indexOf(withRelated, relation) === -1) {
@@ -361,7 +360,7 @@ const PreHandlerBase = {
 				let innerLevel = innerObject;
 				let relation = '';        // User relation name
 				let attribute = '';       // Relation attribute with condition
-				let dbAttribute = '';     // DB Attribute name (Snake Case);
+				let key = '';     // DB Attribute name (Snake Case);
 				let prefix = '';
 				let suffix = '';
 				let orPresent = '';
@@ -377,7 +376,7 @@ const PreHandlerBase = {
 						rel.attributes().forEach(function(attr){
 							if (_.includes(el, attr.name)) {
 								attribute = attr;
-								dbAttribute = _.snakeCase(attribute.name);
+								key = attribute.name;
 								suffix = '{' + attribute.name + '}';
 							}
 						});
@@ -401,57 +400,57 @@ const PreHandlerBase = {
 					realValue = _.replace(realValue, NotOperator, '');
 				}
 				if (orPresent && notPresent) {
-					if (!_.has(withFilter, [[relation.name],[dbAttribute],[orPresent],[notPresent]])) {
-						_.set(withFilter, [[relation.name],[dbAttribute],[orPresent],[notPresent]], {});
+					if (!_.has(withFilter, [[relation.name],[key],[orPresent],[notPresent]])) {
+						_.set(withFilter, [[relation.name],[key],[orPresent],[notPresent]], {});
 					}
-					if (!_.has(relatedQuery, [[relation.name],[dbAttribute],[orPresent],[notPresent]])) {
-						_.set(relatedQuery, [[relation.name],[dbAttribute],[orPresent],[notPresent]], {});
+					if (!_.has(relatedQuery, [[relation.name],[key],[orPresent],[notPresent]])) {
+						_.set(relatedQuery, [[relation.name],[key],[orPresent],[notPresent]], {});
 					}
-					if (!_.has(innerObject, [[table],[dbAttribute],[orPresent],[notPresent]])) {
-						_.set(innerObject, [[table],[dbAttribute],[orPresent],[notPresent]], {});
+					if (!_.has(innerObject, [[table],[key],[orPresent],[notPresent]])) {
+						_.set(innerObject, [[table],[key],[orPresent],[notPresent]], {});
 					}
-					actualLevel = actualLevel[relation.name][dbAttribute][orPresent][notPresent];
-					newLevel = newLevel[relation.name][dbAttribute][orPresent][notPresent];
-					innerLevel = innerLevel[table][dbAttribute][orPresent][notPresent];
+					actualLevel = actualLevel[relation.name][key][orPresent][notPresent];
+					newLevel = newLevel[relation.name][key][orPresent][notPresent];
+					innerLevel = innerLevel[table][key][orPresent][notPresent];
 				} else if (orPresent) {
-					if (!_.has(withFilter, [[relation.name],[dbAttribute],[orPresent]])) {
-						_.set(withFilter, [[relation.name],[dbAttribute],[orPresent]], {});
+					if (!_.has(withFilter, [[relation.name],[key],[orPresent]])) {
+						_.set(withFilter, [[relation.name],[key],[orPresent]], {});
 					}
-					if (!_.has(relatedQuery, [[relation.name],[dbAttribute],[orPresent]])) {
-						_.set(relatedQuery, [[relation.name],[dbAttribute],[orPresent]], {});
+					if (!_.has(relatedQuery, [[relation.name],[key],[orPresent]])) {
+						_.set(relatedQuery, [[relation.name],[key],[orPresent]], {});
 					}
-					if (!_.has(innerObject, [[table],[dbAttribute],[orPresent]])) {
-						_.set(innerObject, [[table],[dbAttribute],[orPresent]], {});
+					if (!_.has(innerObject, [[table],[key],[orPresent]])) {
+						_.set(innerObject, [[table],[key],[orPresent]], {});
 					}
-					actualLevel = actualLevel[relation.name][dbAttribute][orPresent];
-					newLevel = newLevel[relation.name][dbAttribute][orPresent];
-					innerLevel = innerLevel[table][dbAttribute][orPresent];
+					actualLevel = actualLevel[relation.name][key][orPresent];
+					newLevel = newLevel[relation.name][key][orPresent];
+					innerLevel = innerLevel[table][key][orPresent];
 				} else if (notPresent) {
-					if (!_.has(withFilter, [[relation.name],[dbAttribute],[notPresent]])) {
-						_.set(withFilter, [[relation.name],[dbAttribute],[notPresent]], {});
+					if (!_.has(withFilter, [[relation.name],[key],[notPresent]])) {
+						_.set(withFilter, [[relation.name],[key],[notPresent]], {});
 					}
-					if (!_.has(relatedQuery, [[relation.name],[dbAttribute],[notPresent]])) {
-						_.set(relatedQuery, [[relation.name],[dbAttribute],[notPresent]], {});
+					if (!_.has(relatedQuery, [[relation.name],[key],[notPresent]])) {
+						_.set(relatedQuery, [[relation.name],[key],[notPresent]], {});
 					}
-					if (!_.has(innerObject, [[table],[dbAttribute],[notPresent]])) {
-						_.set(innerObject, [[table],[dbAttribute],[notPresent]], {});
+					if (!_.has(innerObject, [[table],[key],[notPresent]])) {
+						_.set(innerObject, [[table],[key],[notPresent]], {});
 					}
-					actualLevel = actualLevel[relation.name][dbAttribute][notPresent];
-					newLevel = newLevel[relation.name][dbAttribute][notPresent];
-					innerLevel = innerLevel[table][dbAttribute][notPresent];
+					actualLevel = actualLevel[relation.name][key][notPresent];
+					newLevel = newLevel[relation.name][key][notPresent];
+					innerLevel = innerLevel[table][key][notPresent];
 				} else {
-					if (!_.has(withFilter, [[relation.name],[dbAttribute]])) {
-						_.set(withFilter, [[relation.name],[dbAttribute]], {});
+					if (!_.has(withFilter, [[relation.name],[key]])) {
+						_.set(withFilter, [[relation.name],[key]], {});
 					}
-					if (!_.has(relatedQuery, [[relation.name],[dbAttribute]])) {
-						_.set(relatedQuery, [[relation.name],[dbAttribute]], {});
+					if (!_.has(relatedQuery, [[relation.name],[key]])) {
+						_.set(relatedQuery, [[relation.name],[key]], {});
 					}
-					if (!_.has(innerObject, [[table],[dbAttribute]])) {
-						_.set(innerObject, [[table],[dbAttribute]], {});
+					if (!_.has(innerObject, [[table],[key]])) {
+						_.set(innerObject, [[table],[key]], {});
 					}
-					actualLevel = actualLevel[relation.name][dbAttribute];
-					newLevel = newLevel[relation.name][dbAttribute];
-					innerLevel = innerLevel[table][dbAttribute];
+					actualLevel = actualLevel[relation.name][key];
+					newLevel = newLevel[relation.name][key];
+					innerLevel = innerLevel[table][key];
 				}
 
 				// NULL operator
@@ -472,7 +471,7 @@ const PreHandlerBase = {
 					let tmp = _.split(realValue, ',');
 					tmp.forEach(function(value){
 						let relatedModel = relation.modelSchema();
-						const result = Joi.validate({ [dbAttribute]: value }, relatedModel.schemaQuery());
+						const result = Joi.validate({ [key]: value }, relatedModel.schemaQuery());
 						if (result.error) {
 							error['message'] = result.error.message;
 							return response;
@@ -526,7 +525,7 @@ const PreHandlerBase = {
 					let tmp = _.split(realValue, ',');
 					tmp.forEach(function(value){
 						let relatedModel = relation.modelSchema();
-						const result = Joi.validate({ [dbAttribute]: value }, relatedModel.schemaQuery());
+						const result = Joi.validate({ [key]: value }, relatedModel.schemaQuery());
 						if (result.error) {
 							error['message'] = result.error.message;
 							return response;
@@ -581,7 +580,7 @@ const PreHandlerBase = {
 							realValue = _.replace(realValue, op, '');
 
 							let relatedModel = relation.modelSchema();
-							const result = Joi.validate({ [dbAttribute]: realValue }, relatedModel.schemaQuery());
+							const result = Joi.validate({ [key]: realValue }, relatedModel.schemaQuery());
 							if (result.error) {
 								error['message'] = result.error.message;
 								return response;

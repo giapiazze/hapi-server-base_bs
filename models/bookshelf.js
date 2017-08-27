@@ -1,10 +1,11 @@
 const BookshelfFactory = require('bookshelf');
 const KnexFactory = require('knex');
 const KnexConfig = require('../knexfile');
-const SoftDelete = require('bookshelf-paranoia');
+const BookshelfParanoia = require('bookshelf-paranoia');
 const BookshelfScopes = require('bookshelf-scopes');
+const BookshelfEloquent = require('bookshelf-eloquent');
 const BookshelfModelBase = require('bookshelf-modelbase');
-const BookshelfCamelCase = require('bookshelf-camelcase');
+const _ = require('lodash');
 
 // create connection to the database
 const Knex = KnexFactory(KnexConfig.development);
@@ -34,11 +35,13 @@ Bookshelf.plugin('virtuals');
 // https://github.com/bookshelf/bookshelf/wiki/Plugin:-Visibility
 Bookshelf.plugin('visibility');
 
-Bookshelf.plugin(SoftDelete);
+Bookshelf.plugin(BookshelfParanoia, { field: 'deletedAt' });
 
 Bookshelf.plugin(BookshelfScopes);
+//
+// Bookshelf.plugin(BookshelfCamelCase);
 
-Bookshelf.plugin(BookshelfCamelCase);
+Bookshelf.plugin(BookshelfEloquent);
 
 
 

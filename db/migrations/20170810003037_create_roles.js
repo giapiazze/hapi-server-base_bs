@@ -9,9 +9,9 @@ exports.up = function(knex, Promise) {
 		tbl.unique(['name']);
 
 		// Timestamp
-		tbl.timestamp('created_at').defaultTo(knex.fn.now());
-		tbl.timestamp('updated_at').defaultTo(knex.fn.now());
-		tbl.timestamp('deleted_at').nullable();
+		tbl.timestamp('createdAt').defaultTo(knex.fn.now());
+		tbl.timestamp('updatedAt').defaultTo(knex.fn.now());
+		tbl.timestamp('deletedAt').nullable();
 	})
 };
 

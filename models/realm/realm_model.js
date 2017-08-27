@@ -7,11 +7,14 @@ const Realm = Bookshelf.Model.extend({
 		tableName: 'realms',
 
 		softDelete: true,
-		hasTimestamps: true,
+		hasTimestamps: ['createdAt', 'updatedAt'],
 
 		// relationships
 		users: function () {
-			return this.belongsToMany(Bookshelf._models.User, 'realms_roles_users');
+			return this.belongsToMany(Bookshelf.model('User'), 'realms_roles_users', 'realmId', 'userId');
+		},
+		realmsRolesUsers: function () {
+			return this.hasMany(Bookshelf.model('RealmsRolesUsers'), 'realmId');
 		},
 	},
 	// {
